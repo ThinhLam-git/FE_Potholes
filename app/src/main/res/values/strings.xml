@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Authentication_UIUX</string>
+    <string name="select_language">Select Language</string>
+    <string name="english">ENGLISH</string>
+    <string name="vietnamese">VIETNAMESE</string>
+    <string name="item_title">Item Title</string>
+    <string name="item_content">Item Content</string>
+    <string name="brief_terms_and_policies">This document outlines the terms and privacy policy for the SmartRoad VNU app, developed by Team 9 as a free service. By using the app, you agree to the following terms and policies.</string>
+    <string name="terms_and_policies">Terms and Policies</string>
+    <string name="back">Back</string>
 </resources>
