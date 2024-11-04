@@ -1,5 +1,6 @@
 package com.example.authentication_uiux;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -38,6 +39,8 @@ public class recoveryPassword extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //Quay lại màn hình trước (Forgot Passwor)
+                Intent intent = new Intent(recoveryPassword.this, forgotPassword.class);
+                startActivity(intent);
                 finish();
             }
         });
