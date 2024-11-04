@@ -1,6 +1,7 @@
 package com.example.authentication_uiux;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -37,7 +38,13 @@ public class recoveryPassword extends AppCompatActivity {
         backButton = findViewById(R.id.backButton);
 
         //Tạo event click cho nút back
-        backButton.setOnClickListener(v -> finish());
+        backButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                //Quay lại màn hình trước (Forgot Passwor)
+                finish();
+            }
+        });
 
         recoverPasswordButton.setOnClickListener(v -> {
            if(validateInputs()){
