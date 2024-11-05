@@ -1,6 +1,10 @@
 package com.example.authentication_uiux;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -10,6 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Term_Policy_Main extends AppCompatActivity {
+    private ImageButton backButton;
+
+    @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,5 +37,14 @@ public class Term_Policy_Main extends AppCompatActivity {
 
         TermPolicyAdapter adapter = new TermPolicyAdapter(items);
         recyclerView.setAdapter(adapter);
+
+        //set up for back button
+        backButton = findViewById(R.id.back_button);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 }
