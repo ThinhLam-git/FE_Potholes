@@ -2,9 +2,11 @@ package com.example.authentication_uiux;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,79 +20,71 @@ public class recoveryPassword extends AppCompatActivity {
     private TextInputEditText newPasswordInput;
     private TextInputEditText confirmPasswordInput;
     private MaterialButton recoverPasswordButton;
-    private TextView signInLink;
     private ImageButton backButton;
+    private TextView signInLink;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recovery_password);
 
-        //Khởi tao các View
+        initializeViews();
+        setupClickListeners();
+    }
+
+    private void initializeViews() {
         verifyCodeInput = findViewById(R.id.verifyCodeInput);
         newPasswordInput = findViewById(R.id.newPasswordInput);
         confirmPasswordInput = findViewById(R.id.confirmPasswordInput);
         recoverPasswordButton = findViewById(R.id.recoverPasswordButton);
-        signInLink = findViewById(R.id.signInLink);
         backButton = findViewById(R.id.backButton);
-
-        //Tạo event click cho nút back
-        backButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                //Quay lại màn hình trước (Forgot Passwor)
-                Intent intent = new Intent(recoveryPassword.this, forgotPassword.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-
-        recoverPasswordButton.setOnClickListener(v -> {
-           if(validateInputs()){
-               recoverPassword();
-           }
-        });
-
-        //Click vào span Đăng nhập
-//        signInLink.setOnClickListener(v -> {
-//           Intent intent = new Intent(RecoveryPassword_UI.this, SignInActivity.class);
-//           startActivity(intent);
-//           finish();
-//        });
+        signInLink = findViewById(R.id.signInLink);
     }
 
-    private boolean validateInputs(){
+    private void setupClickListeners() {
+        recoverPasswordButton.setOnClickListener(v -> attemptPasswordRecovery());
+
+        backButton.setOnClickListener(v -> finish());
+
+        signInLink.setOnClickListener(v -> {
+            Intent intent = new Intent(recoveryPassword.this, Sign_In_Activity.class);
+            startActivity(intent);
+            finish();
+        });
+    }
+
+    private void attemptPasswordRecovery() {
         String verifyCode = verifyCodeInput.getText().toString().trim();
         String newPassword = newPasswordInput.getText().toString().trim();
         String confirmPassword = confirmPasswordInput.getText().toString().trim();
 
-        if(verifyCode.isEmpty()){
-            verifyCodeInput.setError("Please enter verification code");
-            return false;
+        if (TextUtils.isEmpty(verifyCode)) {
+            verifyCodeInput.setError("Verification code is required");
+            return;
         }
 
-        if(newPassword.isEmpty()){
-            newPasswordInput.setError("Please enter new password");
-            return false;
+        if (TextUtils.isEmpty(newPassword)) {
+            newPasswordInput.setError("New password is required");
+            return;
         }
 
-        if(confirmPassword.isEmpty()){
-            confirmPasswordInput.setError("Please enter confirm password");
-            return false;
+        if (TextUtils.isEmpty(confirmPassword)) {
+            confirmPasswordInput.setError("Confirm password is required");
+            return;
         }
 
-        //Kiểm tra mặt khẩu mới và xác nhận mật khẩu có giống nhau không
-        if(!newPassword.equals(confirmPassword)){
+        if (!newPassword.equals(confirmPassword)) {
             confirmPasswordInput.setError("Passwords do not match");
-            return false;
+            return;
         }
 
-        return true;
-    }
+        // TODO: Implement actual password recovery logic here
+        Toast.makeText(this, "Password successfully reset", Toast.LENGTH_SHORT).show();
 
-    private void recoverPassword(){
-        //Gửi yêu cầu khôi phục mật khẩu đến server
-        //Sau khi khôi phục thành công, chuyển hướng đến màn hình đăng nhập
-
+        // Navigate back to sign in
+        Intent intent = new Intent(recoveryPassword.this, Sign_In_Activity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
 }

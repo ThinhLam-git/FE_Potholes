@@ -25,58 +25,42 @@ public class forgotPassword extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_password);
 
-        //Khởi tạo các Views
+        initializeViews();
+        setupClickListeners();
+    }
+
+    private void initializeViews() {
         emailInput = findViewById(R.id.emailInput);
         sendEmailButton = findViewById(R.id.sendEmailButton);
-        signInLink = findViewById(R.id.signInLink);
         backButton = findViewById(R.id.backButton);
+        signInLink = findViewById(R.id.signInLink);
+    }
 
-        //Set up for back button
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+    private void setupClickListeners() {
+        sendEmailButton.setOnClickListener(v -> attemptSendRecoveryEmail());
 
-        //Set up for send email button
-        sendEmailButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                String email = emailInput.getText().toString().trim();
+        backButton.setOnClickListener(v -> finish());
 
-                if(TextUtils.isEmpty(email)){
-                    emailInput.setError("Email is required!");
-                } else if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                    emailInput.setError("Invalid email format!");
-                } else{
-                    sendPasswordResetEmail(email);
-                }
-            }
-        });
-
-        //Set up for signInLink
-        signInLink.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                Intent intent = new Intent(forgotPassword.this, tenLayoutCuaSignIn.class);
-                finish(); //close this Activity
-            }
+        signInLink.setOnClickListener(v -> {
+            Intent intent = new Intent(forgotPassword.this, Sign_In_Activity.class);
+            startActivity(intent);
+            finish();
         });
     }
 
-    //Method to handle sending a verify code to reset password
-    public void sendPasswordResetEmail(String email){
-        //Implement sending a verify code to reset password
-        //Giả sử, mình sử dụng Firebase Authentication để gửi email
-//        FirebaseAuth auth = FirebaseAuth.getInstance();
-//        auth.sendPasswordResetEmail(email)
-//                .addOnCompleteListener(task -> {
-//                    if (task.isSuccessful()) {
-//                        Toast.makeText(forgotPassword.this, "Reset email sent. Check your inbox.", Toast.LENGTH_SHORT).show();
-//                    } else {
-//                        Toast.makeText(forgotPassword.this, "Error sending reset email.", Toast.LENGTH_SHORT).show();
-//                    }
-//                });
+    private void attemptSendRecoveryEmail() {
+        String email = emailInput.getText().toString().trim();
+
+        if (TextUtils.isEmpty(email)) {
+            emailInput.setError("Email is required");
+            return;
+        }
+
+        // TODO: Implement actual email recovery logic here
+        Toast.makeText(this, "Recovery email sent", Toast.LENGTH_SHORT).show();
+
+        // Navigate to recovery password screen
+        Intent intent = new Intent(forgotPassword.this, recoveryPassword.class);
+        startActivity(intent);
     }
 }
