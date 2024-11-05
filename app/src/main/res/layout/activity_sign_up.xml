@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Sign_Up_Activity">
+
+
+    <View
+        android:id="@+id/logo"
+        android:layout_width="147dp"
+        android:layout_height="133dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/logo"
+        android:elevation="8dp" />
+
+    <View
+        android:id="@+id/arrow"
+        android:layout_width="40dp"
+        android:layout_height="32dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/arrow_login"
+        android:elevation="8dp" />
+
+    <View
+        android:id="@+id/Sign_up"
+        android:layout_width="95dp"
+        android:layout_height="28dp"
+        android:layout_below="@+id/logo"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/sign_up_text" />
+
+
+    <TextView
+        android:id="@+id/Create"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/Sign_up"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="Create your new account"
+        android:textColor="#5F605F"/>
+
+    <EditText
+        android:id="@+id/Username"
+        android:layout_width="352dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/Create"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:radius="20dp"
+        android:hint="Fullname"
+        android:paddingLeft="60dp"
+        android:background="#ebfdf2"
+        />
+
+    <ImageView
+        android:id="@+id/Userpic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/Create"
+        android:layout_marginTop="37dp"
+        android:layout_marginRight="-40dp"
+        android:layout_toLeftOf="@id/Username"
+        app:srcCompat="@drawable/username" />
+
+    <EditText
+        android:id="@+id/Mail"
+        android:layout_width="352dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/Username"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:radius="20dp"
+        android:hint="abc@gmail.com"
+        android:paddingLeft="60dp"
+        android:background="#ebfdf2"
+        />
+
+
+
+    <ImageView
+        android:id="@+id/Mailpic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/Username"
+        android:layout_marginTop="37dp"
+        android:layout_marginRight="-44dp"
+        android:layout_toLeftOf="@id/Username"
+        app:srcCompat="@drawable/mail" />
+
+
+    <EditText
+        android:id="@+id/Pass"
+        android:layout_width="352dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/Mail"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:radius="20dp"
+        android:hint="Password"
+        android:paddingLeft="60dp"
+        android:background="#ebfdf2"
+        />
+
+    <ImageView
+        android:id="@+id/Passpic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/Mail"
+        android:layout_marginTop="37dp"
+        android:layout_marginRight="-44dp"
+        android:layout_toLeftOf="@id/Username"
+        app:srcCompat="@drawable/pass" />
+
+    <EditText
+        android:id="@+id/Confirm"
+        android:layout_width="352dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/Pass"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:radius="20dp"
+        android:hint="Confirm Password"
+        android:paddingLeft="60dp"
+        android:background="#ebfdf2"
+        />
+
+
+    <ImageView
+        android:id="@+id/Confirmpic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/Pass"
+        android:layout_marginTop="37dp"
+        android:layout_marginRight="-44dp"
+        android:layout_toLeftOf="@id/Username"
+        app:srcCompat="@drawable/pass" />
+
+<!--    <CheckBox-->
+<!--        tools:ignore="MissingPrefix"-->
+<!--        android:id="@+id/checkBox"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="50dp"-->
+<!--        android:layout_below="@+id/Confirm"-->
+<!--        android:text="I understood the "/>-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/Policy"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_below="@id/Confirm"-->
+<!--        android:layout_toRightOf="@id/checkBox"-->
+<!--        android:layout_marginTop="14dp"-->
+<!--        android:text="term &amp; policy."-->
+<!--        android:textColor="#118844"-->
+<!--        />-->
+
+    <RelativeLayout
+        android:id="@+id/groupCB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/Confirm"
+        >
+
+        <CheckBox
+            tools:ignore="MissingPrefix"
+            android:id="@+id/checkBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="I understood the " />
+
+        <TextView
+            android:id="@+id/Policy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/checkBox"
+
+            android:text="term &amp; policy."
+            android:layout_marginTop="14dp"
+            android:textColor="#118844" />
+    </RelativeLayout>
+    <Button
+        android:id="@+id/buttonSignUp"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:text="SIGN UP"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#118844"
+        android:padding="12dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:layout_below="@+id/groupCB"
+        android:layout_centerHorizontal="true"
+        />
+
+    <ImageView
+        android:id="@+id/Lineleft"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/buttonSignUp"
+
+        android:layout_marginTop="30dp"
+        android:layout_marginRight="20dp"
+
+        android:layout_toLeftOf="@id/Continue"
+        app:srcCompat="@drawable/line" />
+
+    <TextView
+        android:id="@+id/Continue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/buttonSignUp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="Or Continue With"
+        android:textColor="#5F605F"/>
+
+    <ImageView
+        android:id="@+id/Lineright"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/buttonSignUp"
+
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="20dp"
+
+        android:layout_toRightOf="@id/Continue"
+        app:srcCompat="@drawable/line" />
+
+    <RelativeLayout
+        android:id="@+id/groupContinue"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_below="@+id/Continue"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp">
+
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardViewGG"
+            android:layout_width="94dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="#F4F4F4"
+            app:cardBackgroundColor="#F4F4F4"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp">
+
+            <ImageView
+                android:id="@+id/ggpic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/gg" />
+
+        </androidx.cardview.widget.CardView>
+
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardViewFB"
+            android:layout_width="94dp"
+            android:layout_height="40dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="69dp"
+            android:layout_marginTop="8dp"
+            android:layout_toRightOf="@+id/cardViewGG"
+            android:backgroundTint="#F4F4F4"
+            app:cardBackgroundColor="#F4F4F4"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp">
+
+            <ImageView
+                android:id="@+id/fbpic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/fb" />
+
+        </androidx.cardview.widget.CardView>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/groupHave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/groupContinue"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp">
+    <TextView
+        android:id="@+id/Have1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Have an account?"
+        android:textColor="#5F605F"/>
+
+    <TextView
+        android:id="@+id/Have2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/Have1"
+        android:text=" SIGN IN"
+        android:textColor="#118844"
+        />
+    </RelativeLayout>
+
+</RelativeLayout>
