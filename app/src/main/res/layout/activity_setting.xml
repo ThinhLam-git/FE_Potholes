@@ -55,10 +55,20 @@
             />
 
             <ImageView
+                android:id="@+id/expand_icon_Sensitivity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:src="@drawable/ic_arrow_down" />
+                android:src="@drawable/ic_arrow_down"
+                />
+
+            <Spinner
+                android:id="@+id/sensitivity_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/expand_icon_Sensitivity"
+                android:layout_alignEnd="@id/expand_icon_Sensitivity"
+                android:visibility="gone" />
         </RelativeLayout>
 
         <!-- Alert Distance Option -->
