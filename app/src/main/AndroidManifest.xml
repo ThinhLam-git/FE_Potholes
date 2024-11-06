@@ -12,31 +12,46 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Authentication_UIUX"
         tools:targetApi="31">
+
+        <!-- Home Activity - set as launcher to open first -->
         <activity
-            android:name=".Term_Policy_Main"
-            android:exported="true" >
+            android:name=".Home"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Sign_Up_Activity"
+
+        <!-- Term Policy Main Activity -->
+        <activity
+            android:name=".Term_Policy_Main"
+            android:exported="true" />
+
+        <!-- Sign Up Activity -->
+        <activity
+            android:name=".Sign_Up_Activity"
             android:exported="false" />
 
+        <!-- Language Setting Activity -->
         <activity
             android:name=".languageSetting"
             android:exported="false" />
+
+        <!-- Recovery Password Activity -->
         <activity
             android:name=".recoveryPassword"
             android:exported="false" />
+
+        <!-- Forgot Password Activity -->
         <activity
             android:name=".forgotPassword"
             android:exported="false" />
+
+        <!-- Welcome Activity -->
         <activity
             android:name=".welcome"
-            android:exported="false"/>
+            android:exported="false" />
 
     </application>
-
 </manifest>
