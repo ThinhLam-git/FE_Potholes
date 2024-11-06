@@ -61,16 +61,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/english"
-            android:textColor="@android:color/white"
-            android:textSize="16sp" />
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            android:layout_weight="1"/>
 
         <CheckBox
             android:id="@+id/english_checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checked="true"
-            android:buttonTint="@android:color/white"
-            android:layout_marginStart="8dp" />
+            android:buttonTint="@android:color/black"
+            android:checked="true" />
     </LinearLayout>
 
     <!-- Vietnamese button with checkbox -->
@@ -93,14 +93,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/vietnamese"
-            android:textColor="@android:color/white"
-            android:textSize="16sp" />
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            android:layout_weight="1"/>
 
         <CheckBox
             android:id="@+id/vietnamese_checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:buttonTint="@android:color/white"
+            android:buttonTint="@android:color/black"
             android:layout_marginStart="8dp" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
