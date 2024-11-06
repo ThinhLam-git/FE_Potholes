@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -47,7 +47,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Sensitivity"
-                android:textSize="16sp" />
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="15dp"
+                android:layout_centerVertical="true"
+            />
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -67,7 +72,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Alert Distance Option"
-                android:textSize="16sp" />
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="15dp"
+                android:layout_centerVertical="true"/>
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -87,7 +96,11 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_arrow_right"
                 android:text="Account"
-                android:textSize="16sp" />
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="15dp"
+                android:layout_centerVertical="true" />
 
         </RelativeLayout>
 
@@ -102,7 +115,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Vibration Alert"
-                android:textSize="16sp" />
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="15dp"
+                android:layout_centerVertical="true" />
 
             <Switch
                 android:layout_width="80dp"
@@ -120,7 +137,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Data Update"
-                android:textSize="16sp" />
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="15dp"
+                android:layout_centerVertical="true" />
 
             <Switch
                 android:layout_width="77dp"
@@ -139,7 +160,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Dark Mode"
-                android:textSize="16sp" />
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="15dp"
+                android:layout_centerVertical="true" />
 
             <Switch
                 android:layout_width="76dp"
@@ -154,7 +179,10 @@
             android:paddingVertical="16dp"
             android:text="Log out"
             android:textColor="#FF0000"
-            android:textSize="16sp" />
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="15dp"/>
     </LinearLayout>
 
     <LinearLayout
