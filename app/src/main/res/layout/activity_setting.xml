@@ -132,7 +132,8 @@
             <Switch
                 android:layout_width="80dp"
                 android:layout_height="53dp"
-                android:layout_alignParentEnd="true" />
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="25dp"/>
         </RelativeLayout>
 
         <!-- Data Update Switch -->
@@ -154,7 +155,8 @@
             <Switch
                 android:layout_width="77dp"
                 android:layout_height="51dp"
-                android:layout_alignParentEnd="true" />
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="25dp"/>
         </RelativeLayout>
 
         <!-- Dark Mode Switch -->
@@ -177,7 +179,8 @@
             <Switch
                 android:layout_width="76dp"
                 android:layout_height="60dp"
-                android:layout_alignParentEnd="true" />
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="25dp"/>
         </RelativeLayout>
 
         <!-- Log out -->
