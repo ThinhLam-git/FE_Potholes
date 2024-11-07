@@ -32,7 +32,6 @@ public class Sign_In_Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
-
         initializeViews();
         setupClickListeners();
 
@@ -50,18 +49,28 @@ public class Sign_In_Activity extends AppCompatActivity {
     }
 
     private void setupClickListeners() {
-        signInButton.setOnClickListener(v -> attemptLogin());
+        signInButton.setOnClickListener( v -> attemptLogin());
 
         forgotPasswordText.setOnClickListener(v -> {
             Intent intent = new Intent(Sign_In_Activity.this, forgotPassword.class);
             startActivity(intent);
         });
 
-        backArrow.setOnClickListener(v -> finish());
+        backArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Sign_In_Activity.this, welcome.class);
+                startActivity(intent);
+                finish(); // Optional: Close this activity
+            }
+        });
 
-        signUpLink.setOnClickListener(v -> {
-            Intent intent = new Intent(Sign_In_Activity.this, Sign_Up_Activity.class);
-            startActivity(intent);
+        signUpLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Sign_In_Activity.this, Sign_Up_Activity.class);
+                startActivity(intent);
+            }
         });
 
         googleSignIn.setOnClickListener(v -> handleGoogleSignIn());

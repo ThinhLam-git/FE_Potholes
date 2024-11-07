@@ -5,11 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 public class welcome extends AppCompatActivity {
     private Button signInButton;
@@ -25,18 +21,25 @@ public class welcome extends AppCompatActivity {
         signUpButton = findViewById(R.id.sign_up_button);
         languageSet = findViewById(R.id.language_set);
 
-        signInButton.setOnClickListener(v -> {
-            Intent intent = new Intent(welcome.this, Sign_In_Activity.class);
-            startActivity(intent);
+        signInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent1 = new Intent(welcome.this, Sign_In_Activity.class);
+                startActivity(intent1);
+            }
         });
 
-        signUpButton.setOnClickListener(v -> {
-            Intent intent = new Intent(welcome.this, Sign_Up_Activity.class);
-            startActivity(intent);
+        signUpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent2 = new Intent(welcome.this, Sign_Up_Activity.class);
+                startActivity(intent2);
+            }
         });
 
         languageSet.setOnClickListener(v -> {
-            // Implement language selection functionality
+            Intent intent3 = new Intent(welcome.this, languageSetting.class);
+            startActivity(intent3);
         });
 
     }

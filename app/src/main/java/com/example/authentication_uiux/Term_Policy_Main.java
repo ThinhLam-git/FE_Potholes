@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Term_Policy_Main extends AppCompatActivity {
-    private ImageButton backButton;
 
     @SuppressLint("WrongViewCast")
     @Override
@@ -39,10 +38,12 @@ public class Term_Policy_Main extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         //set up for back button
-        backButton = findViewById(R.id.back_button);
+        ImageButton backButton = findViewById(R.id.back_button);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent = new Intent(Term_Policy_Main.this, Sign_Up_Activity.class);
+                startActivity(intent);
                 finish();
             }
         });

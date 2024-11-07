@@ -49,23 +49,37 @@ public class Sign_Up_Activity extends AppCompatActivity {
         facebookSignUp = findViewById(R.id.cardViewFB);
         backArrow = findViewById(R.id.arrow);
         signInLink = findViewById(R.id.Have2);
-        policyLink = findViewById(R.id.Policy); // Giả sử ID của TextView là termPolicy
+        policyLink = findViewById(R.id.Policy);
     }
 
     private void setupClickListeners() {
         signUpButton.setOnClickListener(v -> attemptSignUp());
 
-        backArrow.setOnClickListener(v -> finish());
+        backArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Sign_Up_Activity.this, welcome.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
         signInLink.setOnClickListener(v -> {
             Intent intent = new Intent(Sign_Up_Activity.this, Sign_In_Activity.class);
             startActivity(intent);
-            finish();
         });
 
-        policyLink.setOnClickListener(v -> {
-            Intent intent = new Intent(Sign_Up_Activity.this, Term_Policy_Main.class);
-            startActivity(intent);
+        policyLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    Intent intent = new Intent(Sign_Up_Activity.this, Term_Policy_Main.class);
+                    startActivity(intent);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(Sign_Up_Activity.this, "Failed to open Terms and Policy page", Toast.LENGTH_SHORT).show();
+                }
+            }
         });
 
         googleSignUp.setOnClickListener(v -> handleGoogleSignUp());

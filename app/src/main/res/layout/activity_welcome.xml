@@ -43,7 +43,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="60dp"
         android:contentDescription="Logo"
-        android:src="@drawable/logo" />
+        android:src="@drawable/logo2" />
 
     <!-- Sign In Button -->
     <Button

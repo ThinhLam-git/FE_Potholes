@@ -2,106 +2,89 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:background="@android:color/white"
+    tools:context=".languageSetting">
 
-    <!-- Back button icon -->
+    <!-- Back Button -->
     <ImageView
         android:id="@+id/back_button"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:src="@drawable/ic_back_arrow"
-        android:layout_margin="16dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="64dp"
+        android:background="@drawable/arrow_login"
+        android:contentDescription="Back button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- App logo -->
+    <!-- Logo -->
     <ImageView
         android:id="@+id/logo"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="192dp"
+        android:layout_height="153dp"
         android:src="@drawable/logo"
-        app:layout_constraintTop_toBottomOf="@id/back_button"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp" />
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/back_button" />
 
     <!-- "Select Language" Text -->
     <TextView
         android:id="@+id/select_language_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/select_language"
-        android:textSize="20sp"
-        android:textColor="@android:color/holo_green_dark"
+        android:layout_marginTop="16dp"
         android:fontFamily="sans-serif-medium"
-        app:layout_constraintTop_toBottomOf="@id/logo"
-        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/select_language"
+        android:textColor="@color/primary_theme_color"
+        android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/logo" />
 
-    <!-- English button with checkbox -->
-    <LinearLayout
-        android:id="@+id/english_button"
+    <!-- RadioGroup for language selection -->
+    <RadioGroup
+        android:id="@+id/language_radio_group"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="12dp"
-        android:background="@drawable/rounded_button"
-        android:gravity="center_vertical"
+        android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@id/select_language_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <!-- English button with radio button -->
+        <RadioButton
+            android:id="@+id/english_radio_button"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/rounded_button"
+            android:buttonTint="@android:color/holo_green_light"
+            android:checked="true"
+            android:padding="12dp"
             android:text="@string/english"
-            android:textColor="@android:color/black"
-            android:textSize="16sp"
-            android:layout_weight="1"/>
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
 
-        <CheckBox
-            android:id="@+id/english_checkbox"
-            android:layout_width="wrap_content"
+        <!-- Vietnamese button with radio button -->
+        <RadioButton
+            android:id="@+id/vietnamese_radio_button"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:buttonTint="@android:color/black"
-            android:checked="true" />
-    </LinearLayout>
-
-    <!-- Vietnamese button with checkbox -->
-    <LinearLayout
-        android:id="@+id/vietnamese_button"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="12dp"
-        android:background="@drawable/rounded_button"
-        android:gravity="center_vertical"
-        app:layout_constraintTop_toBottomOf="@id/english_button"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/rounded_button"
+            android:buttonTint="@android:color/holo_green_light"
+            android:padding="12dp"
             android:text="@string/vietnamese"
-            android:textColor="@android:color/black"
-            android:textSize="16sp"
-            android:layout_weight="1"/>
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
+    </RadioGroup>
 
-        <CheckBox
-            android:id="@+id/vietnamese_checkbox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:buttonTint="@android:color/black"
-            android:layout_marginStart="8dp" />
-    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

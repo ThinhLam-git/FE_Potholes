@@ -23,24 +23,33 @@
             android:value="AIzaSyAj2f6K8Ruom8dfvp9M2fS1k6LLye2XKU4" />-->
 <!--        upto local.properties-->
 
-        <!-- Home Activity - set as launcher to open first -->
+
+<!--        Home Activity-->
         <activity
             android:name=".Home"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:exported="true"/>
 
         <!-- Term Policy Main Activity -->
         <activity
             android:name=".Term_Policy_Main"
             android:exported="true" />
 
+        <!-- Term Policy Adapter Activity -->
+        <activity
+            android:name=".TermPolicyAdapter"
+            android:exported="false" />
+
+        <!-- Term Policy Item Activity -->
+        <activity android:name=".TermPolicyItem"/>
+
         <!-- Sign Up Activity -->
         <activity
             android:name=".Sign_Up_Activity"
+            android:exported="false" />
+
+        <!-- Sign In Activity -->
+        <activity
+            android:name=".Sign_In_Activity"
             android:exported="false" />
 
         <!-- Language Setting Activity -->
@@ -61,7 +70,12 @@
         <!-- Welcome Activity -->
         <activity
             android:name=".welcome"
-            android:exported="false" />
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
     </application>
 </manifest>
