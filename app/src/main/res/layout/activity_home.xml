@@ -480,7 +480,7 @@
                 android:background="@drawable/circle_number">
 
                 <View
-                    android:id="@+id/inner_circle"
+                    android:id="@+id/inner_circle2"
                     android:layout_width="85dp"
                     android:layout_height="85dp"
                     android:layout_centerInParent="true"
