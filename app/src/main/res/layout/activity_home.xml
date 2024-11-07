@@ -479,6 +479,13 @@
                 android:layout_marginEnd="49dp"
                 android:background="@drawable/circle_number">
 
+                <View
+                    android:id="@+id/inner_circle"
+                    android:layout_width="85dp"
+                    android:layout_height="85dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/circle_shape" />
+
                 <TextView
                     android:id="@+id/number41"
                     android:layout_width="71dp"
@@ -508,6 +515,12 @@
                 android:background="@drawable/circle_number">
 
 
+                <View
+                    android:id="@+id/inner_circle"
+                    android:layout_width="85dp"
+                    android:layout_height="85dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/circle_shape" />
                 <TextView
                     android:id="@+id/snumber5"
                     android:layout_width="71dp"
