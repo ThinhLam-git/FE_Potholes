@@ -6,7 +6,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MapActivity">
 
     <RelativeLayout
         android:id="@+id/home"
@@ -477,7 +477,7 @@
                 android:layout_marginStart="42dp"
                 android:layout_marginTop="198dp"
                 android:layout_marginEnd="49dp"
-                android:background="@drawable/circle_shape">
+                android:background="@drawable/circle_number">
 
                 <TextView
                     android:id="@+id/number41"
@@ -505,7 +505,8 @@
                 android:layout_marginStart="42dp"
                 android:layout_marginTop="198dp"
                 android:layout_marginEnd="259dp"
-                android:background="@drawable/circle_shape">
+                android:background="@drawable/circle_number">
+
 
                 <TextView
                     android:id="@+id/snumber5"
