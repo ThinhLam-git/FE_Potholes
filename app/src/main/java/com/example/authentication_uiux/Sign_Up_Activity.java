@@ -124,6 +124,9 @@ public class Sign_Up_Activity extends AppCompatActivity {
 
         // TODO: Implement actual sign up logic here
         Toast.makeText(this, "Sign Up Successful", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(Sign_Up_Activity.this, Sign_In_Activity.class);
+        startActivity(intent);
+        finish();
     }
 
     private void handleGoogleSignUp() {
