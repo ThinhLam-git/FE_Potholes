@@ -575,14 +575,15 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:layout_width="24dp"
+                    android:layout_width="19dp"
                     android:layout_height="24dp"
-                    android:src="@drawable/ic_home"/>
+                    android:src="@drawable/ic_home_color" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Home"
+                    android:textColor="@color/primary_theme_color"
                     android:textSize="10sp"/>
             </LinearLayout>
 

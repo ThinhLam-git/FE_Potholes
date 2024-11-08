@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Profile">
+
+    <RelativeLayout
+        android:id="@+id/profile"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FFFFFF"
+        android:clipToOutline="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <RelativeLayout
+            android:id="@+id/header_layout"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="-2dp"
+            android:layout_marginLeft="-2dp"
+            android:layout_marginTop="-2dp"
+            android:background="#118844"
+            android:clipToOutline="true">
+
+            <View
+                android:id="@+id/rectangle_333"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:layout_alignTop="@id/logo"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/ic_notification" />
+
+            <View
+                android:id="@+id/safe_route"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_above="@+id/rectangle_20"
+                android:layout_marginBottom="30dp"
+                android:layout_toEndOf="@+id/logo"
+                android:background="@drawable/safe_route" />
+
+
+            <View
+                android:id="@+id/logo"
+                android:layout_width="50dp"
+                android:layout_height="45dp"
+                android:layout_above="@+id/rectangle_20"
+                android:layout_marginLeft="10dp"
+                android:layout_marginBottom="25dp"
+                android:background="@drawable/logo" />
+
+            <View
+                android:id="@+id/rectangle_20"
+                android:layout_width="match_parent"
+                android:layout_height="108dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="7dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="-29dp"
+                android:background="@drawable/ic_city" />
+
+            <View
+                android:id="@+id/surrounded"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="-75dp"
+                android:background="@drawable/surrounded"
+                />
+
+        </RelativeLayout>
+
+        <!-- Bottom Navigation -->
+        <RelativeLayout
+            android:id="@+id/profile_section"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/header_layout"
+            android:layout_marginTop="-63dp">
+
+            <TextView
+                android:id="@+id/profile_image"
+                android:layout_width="125dp"
+                android:layout_height="125dp"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/bg_circle"
+                android:gravity="center"
+                android:text="Đ"
+                android:textColor="@color/white"
+                android:textSize="50sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/edit_profile"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignEnd="@id/profile_image"
+                android:layout_alignBottom="@id/profile_image"
+                android:background="@drawable/bg_circle"
+                android:backgroundTint="@color/gray"
+                android:padding="4dp"
+                android:clickable="true"
+                android:src="@drawable/ic_edit" />
+
+            <TextView
+                android:id="@+id/profile_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/profile_image"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="8dp"
+                android:text="PTDat"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/profile_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/profile_name"
+                android:layout_centerHorizontal="true"
+                android:text="22520230@gm.uit.edu.vn"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+        </RelativeLayout>
+
+        <!-- Information Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/profile_section"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Rank Button -->
+            <RelativeLayout
+                android:id="@+id/rank_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/profile_btn"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_trophy"
+                    android:drawablePadding="8dp"
+                    android:text="@string/rank"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:backgroundTint="@color/white"
+                    android:layout_alignParentEnd="true"
+                    android:src="@drawable/ic_arrow_right" />
+            </RelativeLayout>
+
+            <!-- Information Title -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="INFORMATION"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/edit_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:text="Edit"
+                    android:clickable="true"
+                    android:textColor="#118844"
+                    android:textSize="14sp" />
+            </RelativeLayout>
+
+            <!-- Email Info -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Email ID"
+                    android:textColor="@color/gray"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/email_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="22520230@gm.uit.edu.vn"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/light_slate_gray" />
+            </LinearLayout>
+
+            <!-- Username Info -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Username"
+                    android:textColor="@color/gray"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/username_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="PTDat"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/light_slate_gray" />
+            </LinearLayout>
+
+            <!-- Action Buttons -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:orientation="vertical">
+
+                <!-- Updating Data Button -->
+                <RelativeLayout
+                    android:id="@+id/updating_data_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/profile_btn"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/storage"
+                        android:drawablePadding="8dp"
+                        android:text="Updating Data"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"
+                        android:textSize="16sp" />
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentEnd="true"
+                        android:src="@drawable/ic_arrow_right" />
+                </RelativeLayout>
+
+                <!-- Rating App Button -->
+                <RelativeLayout
+                    android:id="@+id/rating_app_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/profile_btn"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/star_purple500"
+                        android:drawablePadding="8dp"
+                        android:text="Rating App"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:textSize="16sp" />
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentEnd="true"
+                        android:src="@drawable/ic_arrow_right" />
+                </RelativeLayout>
+
+                <!-- Company Information Button -->
+                <RelativeLayout
+                    android:id="@+id/company_info_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/profile_btn"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/perm_device_information"
+                        android:drawablePadding="8dp"
+                        android:text="Company Information"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:textSize="16sp" />
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentEnd="true"
+                        android:src="@drawable/ic_arrow_right" />
+                </RelativeLayout>
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/bottom_navigation"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_alignParentBottom="true"
+            android:background="#F8F8F8"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <LinearLayout
+                android:id="@+id/setting_change"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_setting" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Setting"
+                    android:textSize="10sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_home" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Home"
+                    android:textSize="10sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_profile_color" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Profile"
+                    android:textColor="@color/primary_theme_color"
+                    android:textSize="10sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

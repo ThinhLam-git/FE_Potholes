@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools" >
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
@@ -15,67 +15,52 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Authentication_UIUX"
-        tools:targetApi="31">
-
+        tools:targetApi="31" >
+        <activity
+            android:name=".Profile"
+            android:exported="false" />
         <!-- Google Maps API Key -->
-<!--        <meta-data
+        <!--
+        <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAj2f6K8Ruom8dfvp9M2fS1k6LLye2XKU4" />-->
-<!--        upto local.properties-->
-
-
-<!--        Home Activity-->
+            android:value="AIzaSyAj2f6K8Ruom8dfvp9M2fS1k6LLye2XKU4" />
+        -->
+        <!-- upto local.properties -->
+        <!-- Home Activity -->
         <activity
             android:name=".Home"
-            android:exported="true"/>
-
-        <!-- Term Policy Main Activity -->
+            android:exported="true" /> <!-- Term Policy Main Activity -->
         <activity
             android:name=".Term_Policy_Main"
-            android:exported="true" />
-
-        <!-- Term Policy Adapter Activity -->
+            android:exported="true" /> <!-- Term Policy Adapter Activity -->
         <activity
             android:name=".TermPolicyAdapter"
-            android:exported="false" />
-
-        <!-- Term Policy Item Activity -->
-        <activity android:name=".TermPolicyItem"/>
-
-        <!-- Sign Up Activity -->
+            android:exported="false" /> <!-- Term Policy Item Activity -->
+        <activity android:name=".TermPolicyItem" /> <!-- Sign Up Activity -->
         <activity
             android:name=".Sign_Up_Activity"
-            android:exported="false" />
-
-        <!-- Sign In Activity -->
+            android:exported="false" /> <!-- Sign In Activity -->
         <activity
             android:name=".Sign_In_Activity"
-            android:exported="false" />
-
-        <!-- Language Setting Activity -->
+            android:exported="false" /> <!-- Language Setting Activity -->
         <activity
             android:name=".languageSetting"
-            android:exported="false" />
-
-        <!-- Recovery Password Activity -->
+            android:exported="false" /> <!-- Recovery Password Activity -->
         <activity
             android:name=".recoveryPassword"
-            android:exported="false" />
-
-        <!-- Forgot Password Activity -->
+            android:exported="false" /> <!-- Forgot Password Activity -->
         <activity
             android:name=".forgotPassword"
-            android:exported="false" />
-
-        <!-- Welcome Activity -->
+            android:exported="false" /> <!-- Welcome Activity -->
         <activity
             android:name=".welcome"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
     </application>
+
 </manifest>
