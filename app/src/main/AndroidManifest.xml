@@ -10,12 +10,13 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_logo_launcher"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_logo_launcher_round"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Authentication_UIUX"
         tools:targetApi="31">
+
         <activity
             android:name=".RankItem"
             android:exported="false" />
@@ -25,70 +26,52 @@
         <activity
             android:name=".Profile"
             android:exported="false" />
-
-        <activity android:name=".setting"
+        <activity
+            android:name=".setting"
             android:exported="false" />
 
-        <!-- Google Maps API Key -->
-        <!--
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAj2f6K8Ruom8dfvp9M2fS1k6LLye2XKU4" />
-        -->
-        <!-- upto local.properties -->
-        <!-- Home Activity -->
+
         <activity
             android:name=".Home"
             android:exported="true" />
-
-        <!-- Term Policy Main Activity -->
         <activity
             android:name=".Term_Policy_Main"
             android:exported="true" />
-
-        <!-- Term Policy Adapter Activity -->
         <activity
             android:name=".TermPolicyAdapter"
             android:exported="false" />
-
-        <!-- Term Policy Item Activity -->
-        <activity android:name=".TermPolicyItem" />
-
-        <!-- Sign Up Activity -->
+        <activity
+            android:name=".TermPolicyItem"
+            android:exported="false" />
         <activity
             android:name=".Sign_Up_Activity"
             android:exported="false" />
-
-        <!-- Sign In Activity -->
         <activity
             android:name=".Sign_In_Activity"
             android:exported="false" />
-
-        <!-- Language Setting Activity -->
         <activity
             android:name=".languageSetting"
             android:exported="false" />
-
-        <!-- Recovery Password Activity -->
         <activity
             android:name=".recoveryPassword"
             android:exported="false" />
-
-        <!-- Forgot Password Activity -->
         <activity
             android:name=".forgotPassword"
             android:exported="false" />
-
-        <!-- Welcome Activity -->
         <activity
             android:name=".welcome"
-            android:exported="true">
+            android:exported="true"
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"/>
     </application>
-
 </manifest>

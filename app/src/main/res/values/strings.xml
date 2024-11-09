@@ -9,4 +9,8 @@
     <string name="terms_and_policies">Terms and Policies</string>
     <string name="back">Back</string>
     <string name="rank">Rank</string>
+
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
 </resources>

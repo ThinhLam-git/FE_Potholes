@@ -94,7 +94,7 @@ public class Sign_In_Activity extends AppCompatActivity {
         // TODO: Implement actual login logic here
         // For now, just show a success message
         Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(Sign_In_Activity.this, Home.class);
+        Intent intent = new Intent(Sign_In_Activity.this,MainActivity.class /*Home.class*/);
         startActivity(intent);
         finish();
     }
