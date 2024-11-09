@@ -27,7 +27,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import edu.poly.map.R;
+import com.example.authentication_uiux.R;
 
 public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
