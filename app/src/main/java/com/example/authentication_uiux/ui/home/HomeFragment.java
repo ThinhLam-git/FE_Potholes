@@ -284,11 +284,17 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Sensor
                 for (Location location : locationResult.getLocations()) {
                     if (location != null) {
                         LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+
+                        // Check if the marker is initialized
                         if (currentLocationMarker != null) {
+                            // Update the marker's position if it's already initialized
                             currentLocationMarker.setPosition(currentLocation);
                         } else {
+                            // Initialize the marker for the first time
                             currentLocationMarker = mMap.addMarker(new MarkerOptions().position(currentLocation).title("Bạn đang ở đây"));
                         }
+
+                        // Move the camera to the current location
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 18.0f));
                     }
                 }
