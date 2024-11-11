@@ -17,7 +17,7 @@ public class SensorProcessing extends AppCompatActivity implements SensorEventLi
     private Sensor accelerometer;
     private float lastX, lastY, lastZ;
     private boolean isInitialized = false;
-    private static final float SHAKE_THRESHOLD = 12.0f;
+    private static final float SHAKE_THRESHOLD = 30.0f;
 
     private TextView xAxisTextView;
     private TextView yAxisTextView;
