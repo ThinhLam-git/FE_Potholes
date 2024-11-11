@@ -57,28 +57,44 @@
         android:layout_toLeftOf="@id/Mail"
         app:srcCompat="@drawable/mail" />
 
-    <EditText
-        android:id="@+id/Pass"
+
+
+    <RelativeLayout
+        android:id="@+id/Pass_layout"
         android:layout_width="352dp"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/Mail"
         android:layout_marginTop="20dp"
         android:layout_centerHorizontal="true"
-        android:radius="20dp"
-        android:hint="Password"
-        android:paddingLeft="60dp"
+        >
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="352dp"
+        android:layout_height="50dp"
+        app:passwordToggleEnabled="true"
         android:background="#ebfdf2"
-        />
+        android:paddingLeft="45dp">
 
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/Pass"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:inputType="textPassword"
+        android:hint="Password"
+        android:background="@android:color/transparent"
+        android:layout_alignParentTop="true"
+        android:gravity="center_vertical">
+    </com.google.android.material.textfield.TextInputEditText>
+    </com.google.android.material.textfield.TextInputLayout>
     <ImageView
         android:id="@+id/Passpic"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:layout_below="@+id/Mail"
-        android:layout_marginTop="37dp"
-        android:layout_marginRight="-44dp"
-        android:layout_toLeftOf="@id/Mail"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="25dp"
         app:srcCompat="@drawable/pass" />
+
+    </RelativeLayout>
 
 
     <RelativeLayout
@@ -86,7 +102,7 @@
         android:layout_width="352dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:layout_below="@+id/Pass"
+        android:layout_below="@+id/Pass_layout"
         android:layout_centerHorizontal="true">
 
         <CheckBox
