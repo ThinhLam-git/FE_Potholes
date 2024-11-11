@@ -17,6 +17,14 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import Controller.ApiService;
+import Controller.RetrofitClient;
+import Model.AuthResponse;
+import Model.RegisterRequest;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class Sign_Up_Activity extends AppCompatActivity {
     private EditText fullNameInput;
     private EditText emailInput;
@@ -50,6 +58,34 @@ public class Sign_Up_Activity extends AppCompatActivity {
         backArrow = findViewById(R.id.arrow);
         signInLink = findViewById(R.id.Have2);
         policyLink = findViewById(R.id.Policy);
+
+        signUpButton.setOnClickListener(v -> registerUser());
+    }
+
+
+    private void registerUser() {
+        String username = fullNameInput.getText().toString();
+        String email = emailInput.getText().toString();
+        String password = passwordInput.getText().toString();
+        RegisterRequest request = new RegisterRequest(username,email ,password);
+
+        ApiService apiService = RetrofitClient.getApiService();
+        Call<AuthResponse> call = apiService.register(request);
+        call.enqueue(new Callback<AuthResponse>() {
+            @Override
+            public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(Sign_Up_Activity.this, "Register Successful", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(Sign_Up_Activity.this, "Register Failed", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AuthResponse> call, Throwable t) {
+                Toast.makeText(Sign_Up_Activity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void setupClickListeners() {

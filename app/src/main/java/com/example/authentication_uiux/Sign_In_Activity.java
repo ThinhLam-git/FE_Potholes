@@ -17,6 +17,14 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import Controller.ApiService;
+import Controller.RetrofitClient;
+import Model.AuthResponse;
+import Model.LoginRequest;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class Sign_In_Activity extends AppCompatActivity {
     private EditText emailInput;
     private EditText passwordInput;
@@ -46,10 +54,38 @@ public class Sign_In_Activity extends AppCompatActivity {
         facebookSignIn = findViewById(R.id.cardViewFB);
         backArrow = findViewById(R.id.arrow);
         signUpLink = findViewById(R.id.Have2);
+
+        signInButton.setOnClickListener( v -> loginUser());
+    }
+
+
+    private void loginUser() {
+        String email = emailInput.getText().toString();
+        String password = passwordInput.getText().toString();
+        LoginRequest request = new LoginRequest(email, password);
+
+        ApiService apiService = RetrofitClient.getApiService();
+        Call<AuthResponse> call = apiService.login(request);
+        call.enqueue(new Callback<AuthResponse>() {
+            @Override
+            public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    String token = response.body().getToken();
+                    Toast.makeText(Sign_In_Activity.this, "Login Successful! Token: " + token, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(Sign_In_Activity.this, "Login Failed", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AuthResponse> call, Throwable t) {
+                Toast.makeText(Sign_In_Activity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void setupClickListeners() {
-        signInButton.setOnClickListener( v -> attemptLogin());
+
 
         forgotPasswordText.setOnClickListener(v -> {
             Intent intent = new Intent(Sign_In_Activity.this, forgotPassword.class);
