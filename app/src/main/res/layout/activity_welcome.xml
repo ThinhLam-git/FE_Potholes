@@ -19,13 +19,14 @@
         android:elevation="8dp" />
 
     <!-- Welcome Text -->
+
+    <!-- Logo Image -->
     <TextView
         android:id="@+id/welcome_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/language_set"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="-10dp"
         android:fontFamily="sans-serif-medium"
         android:letterSpacing="0.03"
         android:lineSpacingExtra="5sp"
@@ -34,7 +35,6 @@
         android:textFontWeight="700"
         android:textSize="36sp" />
 
-    <!-- Logo Image -->
     <ImageView
         android:id="@+id/logo"
         android:layout_width="350dp"
