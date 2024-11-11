@@ -12,7 +12,6 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +23,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.authentication_uiux.R;
-import com.google.android.gms.location.CurrentLocationRequest;
+import com.example.authentication_uiux.models.PotholeData;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -34,9 +33,21 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import com.example.authentication_uiux.API.PotholeApi;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HomeFragment extends Fragment implements OnMapReadyCallback, SensorEventListener {
 
@@ -52,6 +63,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Sensor
     private long lastAlertTime = 0;
     private View popupView;
     private Handler popupHandler = new Handler();
+
+    private PotholeApi potholeApi;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -114,9 +127,17 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Sensor
             long currentTime = System.currentTimeMillis();
             if (delta > SHAKE_THRESHOLD && currentTime - lastAlertTime > ALERT_DELAY_MS) {
                 lastAlertTime = currentTime;
-                showPotholeConfirmationDialog();
+                showPotholePopup();
             }
         }
+    }
+
+    private void setupRetrofit() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://localhost:3000") // Replace with your backend URL
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        potholeApi = retrofit.create(PotholeApi.class);
     }
 
     private void showPotholeConfirmationDialog() {
@@ -145,19 +166,68 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Sensor
         Button btnConfirm = popupView.findViewById(R.id.btn_confirm);
 
         btnConfirm.setOnClickListener(v -> {
+            // Get the current location of the pothole
             LatLng potholeLocation = currentLocationMarker.getPosition();
-            mMap.addMarker(new MarkerOptions().position(potholeLocation).title("Ổ gà"));
-            //savePotholeDataToMongoDB(potholeLocation);
+
+            // Create a custom marker for the pothole with a different icon
+            MarkerOptions potholeMarkerOptions = new MarkerOptions()
+                    .position(potholeLocation)
+                    .title("Ổ gà")
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.pothole_marker)); // Use a custom marker image
+
+            // Add a marker for the pothole location on the map
+            mMap.addMarker(potholeMarkerOptions);
+
+            // Call the method to save pothole data to MongoDB
+            savePotholeDataToMongoDB(potholeLocation);
+
+            // Remove the popup after confirmation
             removePopup();
         });
 
         // Add the popup to the screen
         ((ViewGroup) requireView()).addView(popupView);
 
-        // Set timer to auto-dismiss
+        // Set timer to auto-dismiss the popup after 10 seconds
         popupHandler.postDelayed(this::removePopup, 10000);
     }
 
+
+    private void savePotholeDataToMongoDB(LatLng potholeLocation) {
+        if(potholeApi == null){
+            setupRetrofit();
+        }
+
+        //Sample data
+        String detectionTime = "2024-11-11T08:00:00Z"; // Use the actual detection time
+        String user = "KhoaLevaThinhLam"; // Replace with actual user information
+        String status = "reported";
+
+        PotholeData potholeData = new PotholeData(
+                potholeLocation.latitude,
+                potholeLocation.longitude,
+                detectionTime,
+                user,
+                status
+        );
+
+        Call<Void> call = potholeApi.addPothole(potholeData);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if(response.isSuccessful()){
+                    Log.d("HomeFragment", "Pothole data saved successfully");
+                } else {
+                    Log.e("HomeFragment", "Error saving pothole data: " + response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e("HomeFragment", "Error saving pothole data: " + t.getMessage());
+            }
+        });
+    }
 
     private void removePopup() {
         if (popupView != null) {
