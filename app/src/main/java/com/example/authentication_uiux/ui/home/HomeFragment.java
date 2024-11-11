@@ -43,6 +43,8 @@ import com.example.authentication_uiux.API.PotholeApi;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -170,14 +172,14 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Sensor
 
     private void setupRetrofit() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.137.148:3000")
+                .baseUrl("http://localhost:3000")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         potholeApi = retrofit.create(PotholeApi.class);
     }
 
     private void savePotholeDataToMongoDB(LatLng potholeLocation) {
-        if(potholeApi == null){
+        if (potholeApi == null) {
             setupRetrofit();
         }
 
@@ -188,6 +190,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Sensor
             String user = "ThinhLam"; // Replace with actual user information
             String status = "reported";
 
+            // Log location details
+            Log.d("HomeFragment", "Pothole Location: Latitude = " + potholeLocation.latitude + ", Longitude = " + potholeLocation.longitude);
+
             // Create PotholeData object
             PotholeData potholeData = new PotholeData(
                     potholeLocation.latitude,
@@ -197,27 +202,45 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Sensor
                     status
             );
 
+            // Log the PotholeData being sent
+            Log.d("HomeFragment", "Sending Pothole Data: " + potholeData.toString());
+
             // Perform the API call to save pothole data to MongoDB
             Call<Void> call = potholeApi.addPothole(potholeData);
+
+            // Log request URL and headers
+            Log.d("HomeFragment", "Request URL: " + call.request().url());
+            Log.d("HomeFragment", "Request Headers: " + call.request().headers());
+
             call.enqueue(new Callback<Void>() {
                 @Override
                 public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
-                    if(response.isSuccessful()){
+                    if (response.isSuccessful()) {
                         Log.d("HomeFragment", "Pothole data saved successfully");
                     } else {
+                        // Log the response code and the response body
                         Log.e("HomeFragment", "Error saving pothole data1: " + response.message());
+                        try {
+                            String responseBody = response.errorBody() != null ? response.errorBody().string() : "No response body";
+                            Log.e("HomeFragment", "Error Response Body: " + responseBody);
+                        } catch (IOException e) {
+                            Log.e("HomeFragment", "Error reading response body: " + e.getMessage());
+                        }
                     }
                 }
 
                 @Override
                 public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                    // Log detailed error information
                     Log.e("HomeFragment", "Error saving pothole data2: " + t.getMessage());
+                    t.printStackTrace(); // Print stack trace for more details
                 }
             });
         } else {
             Log.e("HomeFragment", "Pothole location is null, cannot save data");
         }
     }
+
 
     private void removePopup() {
         if (popupView != null) {
