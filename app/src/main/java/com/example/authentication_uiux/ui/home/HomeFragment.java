@@ -170,7 +170,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Sensor
 
     private void setupRetrofit() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://localhost:3000")
+                .baseUrl("http://192.168.137.148:3000")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         potholeApi = retrofit.create(PotholeApi.class);
@@ -185,7 +185,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Sensor
         if (potholeLocation != null) {
             // Sample data
             String detectionTime = "2024-11-11T08:00:00Z"; // Use the actual detection time
-            String user = "KhoaLevaThinhLam"; // Replace with actual user information
+            String user = "ThinhLam"; // Replace with actual user information
             String status = "reported";
 
             // Create PotholeData object
@@ -205,13 +205,13 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Sensor
                     if(response.isSuccessful()){
                         Log.d("HomeFragment", "Pothole data saved successfully");
                     } else {
-                        Log.e("HomeFragment", "Error saving pothole data: " + response.message());
+                        Log.e("HomeFragment", "Error saving pothole data1: " + response.message());
                     }
                 }
 
                 @Override
                 public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
-                    Log.e("HomeFragment", "Error saving pothole data: " + t.getMessage());
+                    Log.e("HomeFragment", "Error saving pothole data2: " + t.getMessage());
                 }
             });
         } else {
