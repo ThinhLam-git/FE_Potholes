@@ -11,6 +11,8 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +24,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.authentication_uiux.R;
+import com.google.android.gms.location.CurrentLocationRequest;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -47,6 +50,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Sensor
     private boolean isShaking = false;
     private static final long ALERT_DELAY_MS = 5000;
     private long lastAlertTime = 0;
+    private View popupView;
+    private Handler popupHandler = new Handler();
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -129,6 +134,36 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Sensor
             });
             builder.setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss());
             builder.show();
+        }
+    }
+
+    private void showPotholePopup() {
+        if (popupView != null) return; // Prevent multiple pop-ups
+
+        LayoutInflater inflater = LayoutInflater.from(requireContext());
+        popupView = inflater.inflate(R.layout.popup_pothole, null);
+        Button btnConfirm = popupView.findViewById(R.id.btn_confirm);
+
+        btnConfirm.setOnClickListener(v -> {
+            LatLng potholeLocation = currentLocationMarker.getPosition();
+            mMap.addMarker(new MarkerOptions().position(potholeLocation).title("Ổ gà"));
+            //savePotholeDataToMongoDB(potholeLocation);
+            removePopup();
+        });
+
+        // Add the popup to the screen
+        ((ViewGroup) requireView()).addView(popupView);
+
+        // Set timer to auto-dismiss
+        popupHandler.postDelayed(this::removePopup, 10000);
+    }
+
+
+    private void removePopup() {
+        if (popupView != null) {
+            ((ViewGroup) requireView()).removeView(popupView);
+            popupView = null;
+            popupHandler.removeCallbacksAndMessages(null);
         }
     }
 
