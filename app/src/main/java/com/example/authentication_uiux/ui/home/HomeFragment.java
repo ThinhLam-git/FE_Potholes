@@ -172,7 +172,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Sensor
 
     private void setupRetrofit() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://127.0.0.1:3000")
+                .baseUrl("http://192.168.124.155:3000")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         potholeApi = retrofit.create(PotholeApi.class);

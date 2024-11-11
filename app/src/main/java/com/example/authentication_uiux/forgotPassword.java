@@ -3,22 +3,30 @@ package com.example.authentication_uiux;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Patterns;
-import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.authentication_uiux.API.UserApi;
+import com.example.authentication_uiux.models.user.ForgotPasswordRequest;
+import com.example.authentication_uiux.models.user.ForgotPasswordResponse;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class forgotPassword extends AppCompatActivity {
     private TextInputEditText emailInput;
     private MaterialButton sendEmailButton;
     private TextView signInLink;
     private ImageButton backButton;
+    private UserApi apiService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +35,13 @@ public class forgotPassword extends AppCompatActivity {
 
         initializeViews();
         setupClickListeners();
+
+        // Initialize Retrofit and ApiService
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://192.168.124.155:3000")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        apiService = retrofit.create(UserApi.class);
     }
 
     private void initializeViews() {
@@ -56,11 +71,27 @@ public class forgotPassword extends AppCompatActivity {
             return;
         }
 
-        // TODO: Implement actual email recovery logic here
-        Toast.makeText(this, "Recovery email sent", Toast.LENGTH_SHORT).show();
+        ForgotPasswordRequest request = new ForgotPasswordRequest();
+        request.setEmail(email);
 
-        // Navigate to recovery password screen
-        Intent intent = new Intent(forgotPassword.this, recoveryPassword.class);
-        startActivity(intent);
+        Call<ForgotPasswordResponse> call = apiService.forgotPassword(request);
+        call.enqueue(new Callback<ForgotPasswordResponse>() {
+            @Override
+            public void onResponse(Call<ForgotPasswordResponse> call, Response<ForgotPasswordResponse> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(forgotPassword.this, "Recovery email sent", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(forgotPassword.this, recoveryPassword.class);
+                    intent.putExtra("email", email); // Pass the email to the next activity
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(forgotPassword.this, "Email maybe not exist, Failed to send recovery email", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ForgotPasswordResponse> call, Throwable t) {
+                Toast.makeText(forgotPassword.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

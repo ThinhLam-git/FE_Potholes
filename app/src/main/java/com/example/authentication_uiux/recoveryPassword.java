@@ -3,25 +3,36 @@ package com.example.authentication_uiux;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.View;
+import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.authentication_uiux.API.UserApi;
+import com.example.authentication_uiux.models.user.ChangePasswordRequest;
+import com.example.authentication_uiux.models.user.ChangePasswordResponse;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
-public class recoveryPassword extends AppCompatActivity {
+import java.io.IOException;
 
-    //Khởi tạo các thành phần trong layout
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+public class recoveryPassword extends AppCompatActivity {
     private TextInputEditText verifyCodeInput;
     private TextInputEditText newPasswordInput;
     private TextInputEditText confirmPasswordInput;
     private MaterialButton recoverPasswordButton;
     private ImageButton backButton;
     private TextView signInLink;
+    private UserApi apiService;
+    private String email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +41,16 @@ public class recoveryPassword extends AppCompatActivity {
 
         initializeViews();
         setupClickListeners();
+
+        // Initialize Retrofit and ApiService
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://192.168.124.155:3000")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        apiService = retrofit.create(UserApi.class);
+
+        // Retrieve email from intent
+        email = getIntent().getStringExtra("email");
     }
 
     private void initializeViews() {
@@ -78,13 +99,39 @@ public class recoveryPassword extends AppCompatActivity {
             return;
         }
 
-        // TODO: Implement actual password recovery logic here
-        Toast.makeText(this, "Password successfully reset", Toast.LENGTH_SHORT).show();
+        ChangePasswordRequest request = new ChangePasswordRequest();
+        request.setEmail(email); // Use the email retrieved from the intent
+        request.setOtp(verifyCode);
+        request.setNewPassword(newPassword);
+        request.setCheckNewPassword(confirmPassword);
 
-        // Navigate back to sign in
-        Intent intent = new Intent(recoveryPassword.this, Sign_In_Activity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        finish();
+        Call<ChangePasswordResponse> call = apiService.changePassword(request);
+        call.enqueue(new Callback<ChangePasswordResponse>() {
+            @Override
+            public void onResponse(Call<ChangePasswordResponse> call, Response<ChangePasswordResponse> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(recoveryPassword.this, "Password successfully reset", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(recoveryPassword.this, Sign_In_Activity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    try {
+                        String errorBody = response.errorBody().string();
+                        Log.e("recoveryPassword", "Error: " + errorBody);
+                        Toast.makeText(recoveryPassword.this, "Failed to reset password: " + errorBody, Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Toast.makeText(recoveryPassword.this, "Failed to reset password", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ChangePasswordResponse> call, Throwable t) {
+                Log.e("recoveryPassword", "Error: " + t.getMessage(), t);
+                Toast.makeText(recoveryPassword.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
