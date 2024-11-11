@@ -20,7 +20,7 @@
             android:name=".SensorProcessing"
             android:exported="true" />
         <activity
-            android:name=".RankItem"
+            android:name=".models.RankData"
             android:exported="false" />
         <activity
             android:name=".Rank"
@@ -46,7 +46,7 @@
             android:name=".TermPolicyAdapter"
             android:exported="false" />
         <activity
-            android:name=".TermPolicyItem"
+            android:name=".models.TermPolicyData"
             android:exported="false" />
         <activity
             android:name=".Sign_Up_Activity"

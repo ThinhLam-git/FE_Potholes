@@ -7,6 +7,6 @@ import  retrofit2.http.Body;
 import retrofit2.http.POST;
 
 public interface PotholeApi {
-    @POST("/api/potholes/addPothole")
+    @POST("api/potholes/addPothole")
     Call<Void> addPothole(@Body PotholeData potholeData);
 }

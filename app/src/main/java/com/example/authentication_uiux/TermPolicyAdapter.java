@@ -8,13 +8,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.authentication_uiux.models.TermPolicyData;
+
 import java.util.List;
 
 public class TermPolicyAdapter extends RecyclerView.Adapter<TermPolicyAdapter.ViewHolder> {
-    private List<TermPolicyItem> items;
+    private List<TermPolicyData> items;
     private int expandedPosition = -1;
 
-    public TermPolicyAdapter(List<TermPolicyItem> items){
+    public TermPolicyAdapter(List<TermPolicyData> items){
         this.items = items;
     }
 
@@ -27,7 +29,7 @@ public class TermPolicyAdapter extends RecyclerView.Adapter<TermPolicyAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        TermPolicyItem item = items.get(position);
+        TermPolicyData item = items.get(position);
         holder.title.setText(item.getTitle());
         holder.content.setText(item.getContent());
 

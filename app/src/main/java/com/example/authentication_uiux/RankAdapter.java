@@ -9,13 +9,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.authentication_uiux.models.RankData;
+
 import java.util.List;
 
 public class RankAdapter extends RecyclerView.Adapter<RankAdapter.RankViewHolder> {
-    private List<RankItem> rankItems;
+    private List<RankData> rankData;
 
-    public RankAdapter(List<RankItem> rankItems) {
-        this.rankItems = rankItems;
+    public RankAdapter(List<RankData> rankData) {
+        this.rankData = rankData;
     }
 
     @NonNull
@@ -28,13 +30,13 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.RankViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull RankViewHolder holder, int position) {
-        RankItem item = rankItems.get(position);
+        RankData item = rankData.get(position);
         holder.bind(item, position + 4); // +4 because top 3 are displayed separately
     }
 
     @Override
     public int getItemCount() {
-        return rankItems.size();
+        return rankData.size();
     }
 
     static class RankViewHolder extends RecyclerView.ViewHolder {
@@ -51,7 +53,7 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.RankViewHolder
             score = itemView.findViewById(R.id.score);
         }
 
-        void bind(RankItem item, int position) {
+        void bind(RankData item, int position) {
             rankNumber.setText(String.valueOf(position));
             avatar.setImageResource(item.getAvatarResource());
             name.setText(item.getName());

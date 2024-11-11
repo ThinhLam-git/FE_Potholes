@@ -3,13 +3,11 @@ package com.example.authentication_uiux;
 import android.os.Bundle;
 import android.widget.ImageButton;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.authentication_uiux.models.RankData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +15,7 @@ import java.util.List;
 public class Rank extends AppCompatActivity {
     private RecyclerView rankingsRecyclerView;
     private RankAdapter rankAdapter;
-    private List<RankItem> rankItems;
+    private List<RankData> rankData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,19 +37,19 @@ public class Rank extends AppCompatActivity {
     }
 
     private void initializeRankData() {
-        rankItems = new ArrayList<>();
+        rankData = new ArrayList<>();
 
         // Add sample data
-        rankItems.add(new RankItem("NguyenVanA", R.drawable.avatar_nguyenvana, 80));
-        rankItems.add(new RankItem("NguyenVanB", R.drawable.avatar_nguyenvanb, 75));
-        rankItems.add(new RankItem("You", R.drawable.avatar_you, 75));
-        rankItems.add(new RankItem("NguyenVanD", R.drawable.avatar_nguyenvand, 70));
-        rankItems.add(new RankItem("NguyenVanE", R.drawable.avatar_nguyenvane, 60));
-        rankItems.add(new RankItem("NguyenVanF", R.drawable.avatar_nguyenvanf, 55));
+        rankData.add(new RankData("NguyenVanA", R.drawable.avatar_nguyenvana, 80));
+        rankData.add(new RankData("NguyenVanB", R.drawable.avatar_nguyenvanb, 75));
+        rankData.add(new RankData("You", R.drawable.avatar_you, 75));
+        rankData.add(new RankData("NguyenVanD", R.drawable.avatar_nguyenvand, 70));
+        rankData.add(new RankData("NguyenVanE", R.drawable.avatar_nguyenvane, 60));
+        rankData.add(new RankData("NguyenVanF", R.drawable.avatar_nguyenvanf, 55));
     }
 
     private void setupRecyclerView() {
-        rankAdapter = new RankAdapter(rankItems);
+        rankAdapter = new RankAdapter(rankData);
         rankingsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         rankingsRecyclerView.setAdapter(rankAdapter);
     }

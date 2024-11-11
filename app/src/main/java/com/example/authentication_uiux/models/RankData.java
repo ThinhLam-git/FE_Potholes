@@ -1,11 +1,11 @@
-package com.example.authentication_uiux;
+package com.example.authentication_uiux.models;
 
-public class RankItem {
+public class RankData {
     private String name;
     private int avatarResource;
     private int score;
 
-    public RankItem(String name, int avatarResource, int score) {
+    public RankData(String name, int avatarResource, int score) {
         this.name = name;
         this.avatarResource = avatarResource;
         this.score = score;

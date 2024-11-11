@@ -1,10 +1,10 @@
-package com.example.authentication_uiux;
+package com.example.authentication_uiux.models;
 
-public class TermPolicyItem {
+public class TermPolicyData {
     private String title;
     private String content;
 
-    public TermPolicyItem(String title, String content) {
+    public TermPolicyData(String title, String content) {
         this.title = title;
         this.content = content;
     }

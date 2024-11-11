@@ -107,12 +107,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Sensor
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(@NonNull GoogleMap googleMap) {
         Log.d("HomeFragment", "Map is ready!");
         mMap = googleMap;
 
         // Đặt vị trí mặc định
-        LatLng location = new LatLng(10.870894, 106.803054); // Thay đổi tọa độ theo ý muốn
+        LatLng location = new LatLng(10.870894, 106.803054);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15.0f));
     }
 
@@ -132,32 +132,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Sensor
         }
     }
 
-    private void setupRetrofit() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://localhost:3000") // Replace with your backend URL
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        potholeApi = retrofit.create(PotholeApi.class);
-    }
-
-    private void showPotholeConfirmationDialog() {
-        if (mMap != null && currentLocationMarker != null) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-            builder.setTitle("Xác nhận ổ gà");
-            builder.setMessage("Có muốn xác nhận vị trí hiện tại là một ổ gà không?");
-            builder.setPositiveButton("Xác nhận", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    LatLng potholeLocation = currentLocationMarker.getPosition();
-                    mMap.addMarker(new MarkerOptions().position(potholeLocation).title("Ổ gà"));
-                    dialog.dismiss();
-                }
-            });
-            builder.setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss());
-            builder.show();
-        }
-    }
-
     private void showPotholePopup() {
         if (popupView != null) return; // Prevent multiple pop-ups
 
@@ -166,23 +140,25 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Sensor
         Button btnConfirm = popupView.findViewById(R.id.btn_confirm);
 
         btnConfirm.setOnClickListener(v -> {
-            // Get the current location of the pothole
-            LatLng potholeLocation = currentLocationMarker.getPosition();
+            if (currentLocationMarker != null) {
+                // Get the current location of the pothole from the marker
+                LatLng potholeLocation = currentLocationMarker.getPosition();
 
-            // Create a custom marker for the pothole with a different icon
-            MarkerOptions potholeMarkerOptions = new MarkerOptions()
-                    .position(potholeLocation)
-                    .title("Ổ gà")
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.pothole_marker)); // Use a custom marker image
+                if (potholeLocation != null) {
+                    // Create a custom marker for the pothole with a different icon
+                    mMap.addMarker(new MarkerOptions().position(potholeLocation).title("Ổ gà"));
 
-            // Add a marker for the pothole location on the map
-            mMap.addMarker(potholeMarkerOptions);
+                    // Call the method to save pothole data to MongoDB
+                    savePotholeDataToMongoDB(potholeLocation);
 
-            // Call the method to save pothole data to MongoDB
-            savePotholeDataToMongoDB(potholeLocation);
-
-            // Remove the popup after confirmation
-            removePopup();
+                    // Remove the popup after confirmation
+                    removePopup();
+                } else {
+                    Log.e("HomeFragment", "Current location marker position is null");
+                }
+            } else {
+                Log.e("HomeFragment", "Current location marker is not initialized");
+            }
         });
 
         // Add the popup to the screen
@@ -192,41 +168,55 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Sensor
         popupHandler.postDelayed(this::removePopup, 10000);
     }
 
+    private void setupRetrofit() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://localhost:3000")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        potholeApi = retrofit.create(PotholeApi.class);
+    }
 
     private void savePotholeDataToMongoDB(LatLng potholeLocation) {
         if(potholeApi == null){
             setupRetrofit();
         }
 
-        //Sample data
-        String detectionTime = "2024-11-11T08:00:00Z"; // Use the actual detection time
-        String user = "KhoaLevaThinhLam"; // Replace with actual user information
-        String status = "reported";
+        // Ensure the location is valid before sending it to the server
+        if (potholeLocation != null) {
+            // Sample data
+            String detectionTime = "2024-11-11T08:00:00Z"; // Use the actual detection time
+            String user = "KhoaLevaThinhLam"; // Replace with actual user information
+            String status = "reported";
 
-        PotholeData potholeData = new PotholeData(
-                potholeLocation.latitude,
-                potholeLocation.longitude,
-                detectionTime,
-                user,
-                status
-        );
+            // Create PotholeData object
+            PotholeData potholeData = new PotholeData(
+                    potholeLocation.latitude,
+                    potholeLocation.longitude,
+                    detectionTime,
+                    user,
+                    status
+            );
 
-        Call<Void> call = potholeApi.addPothole(potholeData);
-        call.enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                if(response.isSuccessful()){
-                    Log.d("HomeFragment", "Pothole data saved successfully");
-                } else {
-                    Log.e("HomeFragment", "Error saving pothole data: " + response.message());
+            // Perform the API call to save pothole data to MongoDB
+            Call<Void> call = potholeApi.addPothole(potholeData);
+            call.enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
+                    if(response.isSuccessful()){
+                        Log.d("HomeFragment", "Pothole data saved successfully");
+                    } else {
+                        Log.e("HomeFragment", "Error saving pothole data: " + response.message());
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                Log.e("HomeFragment", "Error saving pothole data: " + t.getMessage());
-            }
-        });
+                @Override
+                public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                    Log.e("HomeFragment", "Error saving pothole data: " + t.getMessage());
+                }
+            });
+        } else {
+            Log.e("HomeFragment", "Pothole location is null, cannot save data");
+        }
     }
 
     private void removePopup() {
@@ -266,8 +256,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Sensor
 
         locationCallback = new LocationCallback() {
             @Override
-            public void onLocationResult(LocationResult locationResult) {
-                if (locationResult == null || mMap == null) return;
+            public void onLocationResult(@NonNull LocationResult locationResult) {
+                if (mMap == null) return;
                 for (Location location : locationResult.getLocations()) {
                     if (location != null) {
                         LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
