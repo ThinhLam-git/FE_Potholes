@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(binding.navView, navController);
 
         // Initialize Retrofit and ApiService
-        Retrofit retrofit = RetrofitClient.getClient("http://192.168.124.155:3000");
+        Retrofit retrofit = RetrofitClient.getClient();
         apiService = retrofit.create(UserApi.class);
 
         // Test the API

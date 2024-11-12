@@ -48,7 +48,7 @@ public class Sign_Up_Activity extends AppCompatActivity {
         setupClickListeners();
 
         // Initialize Retrofit and ApiService
-        Retrofit retrofit = RetrofitClient.getClient("http://192.168.124.155:3000");
+        Retrofit retrofit = RetrofitClient.getClient();
         apiService = retrofit.create(UserApi.class);
     }
 
