@@ -56,7 +56,7 @@ public class Sign_Up_Activity extends AppCompatActivity {
         fullNameInput = findViewById(R.id.Username);
         emailInput = findViewById(R.id.Mail);
         passwordInput = findViewById(R.id.Pass);
-        confirmPasswordInput = findViewById(R.id.Confirm);
+        confirmPasswordInput = findViewById(R.id.ConfirmPass);
         termsCheckbox = findViewById(R.id.checkBox);
         signUpButton = findViewById(R.id.buttonSignUp);
         googleSignUp = findViewById(R.id.cardViewGG);

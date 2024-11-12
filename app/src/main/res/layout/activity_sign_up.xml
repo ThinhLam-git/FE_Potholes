@@ -94,19 +94,30 @@
         android:layout_toLeftOf="@id/Username"
         app:srcCompat="@drawable/mail" />
 
-
-    <EditText
-        android:id="@+id/Pass"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/Pass_layout"
         android:layout_width="352dp"
-        android:layout_height="50dp"
-        android:layout_below="@+id/Mail"
-        android:layout_marginTop="20dp"
-        android:layout_centerHorizontal="true"
-        android:radius="20dp"
-        android:hint="Password"
-        android:paddingLeft="60dp"
+        android:layout_height="55dp"
+        app:passwordToggleEnabled="true"
         android:background="#ebfdf2"
-        />
+        android:paddingLeft="45dp"
+        android:layout_below="@+id/Mail"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/Pass"
+            android:layout_width="match_parent"
+            android:layout_height="49dp"
+            android:inputType="textPassword"
+            android:hint="Password"
+            android:background="@android:color/transparent"
+            android:layout_alignParentTop="true"
+            android:gravity="center_vertical">
+        </com.google.android.material.textfield.TextInputEditText>
+    </com.google.android.material.textfield.TextInputLayout>
+
+
 
     <ImageView
         android:id="@+id/Passpic"
@@ -118,25 +129,37 @@
         android:layout_toLeftOf="@id/Username"
         app:srcCompat="@drawable/pass" />
 
-    <EditText
-        android:id="@+id/Confirm"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/ConfirmPass_layout"
         android:layout_width="352dp"
-        android:layout_height="50dp"
-        android:layout_below="@+id/Pass"
-        android:layout_marginTop="20dp"
-        android:layout_centerHorizontal="true"
-        android:radius="20dp"
-        android:hint="Confirm Password"
-        android:paddingLeft="60dp"
+        android:layout_height="55dp"
+        app:passwordToggleEnabled="true"
         android:background="#ebfdf2"
-        />
+        android:paddingLeft="45dp"
+        android:layout_below="@+id/Pass_layout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/ConfirmPass"
+            android:layout_width="match_parent"
+            android:layout_height="49dp"
+            android:inputType="textPassword"
+            android:hint="Confirm Password"
+            android:background="@android:color/transparent"
+            android:layout_alignParentTop="true"
+            android:gravity="center_vertical">
+        </com.google.android.material.textfield.TextInputEditText>
+    </com.google.android.material.textfield.TextInputLayout>
+
+
 
 
     <ImageView
         android:id="@+id/Confirmpic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/Pass"
+        android:layout_below="@+id/Pass_layout"
         android:layout_marginTop="37dp"
         android:layout_marginRight="-44dp"
         android:layout_toLeftOf="@id/Username"
@@ -167,7 +190,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/Confirm"
+        android:layout_below="@+id/ConfirmPass_layout"
         >
 
         <CheckBox
