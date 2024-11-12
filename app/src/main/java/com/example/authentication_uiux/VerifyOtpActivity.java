@@ -32,7 +32,7 @@ public class VerifyOtpActivity extends AppCompatActivity {
         otpInput = findViewById(R.id.otpInput);
 
         // Initialize Retrofit and ApiService
-        Retrofit retrofit = RetrofitClient.getClient("http://192.168.124.155:3000");
+        Retrofit retrofit = RetrofitClient.getClient();
         apiService = retrofit.create(UserApi.class);
 
         verifyOtpButton.setOnClickListener(new View.OnClickListener() {
