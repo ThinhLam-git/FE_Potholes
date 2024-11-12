@@ -9,6 +9,8 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,7 +18,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -44,6 +51,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -65,12 +74,22 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Sensor
     private long lastAlertTime = 0;
     private View popupView;
     private Handler popupHandler = new Handler();
-
+    private EditText searchEditText;
+    private ImageButton searchButton;
+    private Geocoder geocoder;
     private PotholeApi potholeApi;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
+
+        // Initialize search components
+        searchEditText = root.findViewById(R.id.search_edit_text);
+        searchButton = root.findViewById(R.id.search_button);
+        geocoder = new Geocoder(requireContext(), Locale.getDefault());
+
+        // Setup search functionality
+        setupSearch();
 
         // Khởi tạo cảm biến gia tốc
         sensorManager = (SensorManager) requireActivity().getSystemService(Context.SENSOR_SERVICE);
@@ -105,6 +124,55 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Sensor
         super.onPause();
         if (sensorManager != null) {
             sensorManager.unregisterListener(this);
+        }
+    }
+
+    private void setupSearch() {
+        searchButton.setOnClickListener(v -> performSearch());
+
+        searchEditText.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                performSearch();
+                return true;
+            }
+            return false;
+        });
+    }
+
+    private void performSearch() {
+        String searchQuery = searchEditText.getText().toString().trim();
+        if (searchQuery.isEmpty()) {
+            Toast.makeText(requireContext(), "Vui lòng nhập địa điểm cần tìm", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Hide keyboard
+        InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
+
+        try {
+            List<Address> addressList = geocoder.getFromLocationName(searchQuery, 1);
+            if (addressList != null && !addressList.isEmpty()) {
+                Address address = addressList.get(0);
+                LatLng searchLocation = new LatLng(address.getLatitude(), address.getLongitude());
+
+                // Add marker for searched location
+                if (mMap != null) {
+                    mMap.clear(); // Clear existing markers
+                    mMap.addMarker(new MarkerOptions()
+                            .position(searchLocation)
+                            .title(address.getAddressLine(0))
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+
+                    // Move camera to searched location
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(searchLocation, 15f));
+                }
+            } else {
+                Toast.makeText(requireContext(), "Không tìm thấy địa điểm", Toast.LENGTH_SHORT).show();
+            }
+        } catch (IOException e) {
+            Log.e("HomeFragment", "Error searching location: " + e.getMessage());
+            Toast.makeText(requireContext(), "Lỗi khi tìm kiếm địa điểm", Toast.LENGTH_SHORT).show();
         }
     }
 
