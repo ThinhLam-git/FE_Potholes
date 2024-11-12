@@ -26,7 +26,7 @@ public class Profile extends AppCompatActivity {
     private ImageView editProfile;
     private TextView editInfo;
     private RelativeLayout rankButton, updatingDataButton, ratingAppButton, companyInfoButton;
-    private LinearLayout settingChange, homeChange;
+    private View settingChange;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,10 +60,7 @@ public class Profile extends AppCompatActivity {
         updatingDataButton = findViewById(R.id.updating_data_button);
         ratingAppButton = findViewById(R.id.rating_app_button);
         companyInfoButton = findViewById(R.id.company_info_button);
-
-        //Navigations
         settingChange = findViewById(R.id.setting_change);
-        homeChange = findViewById(R.id.home_change);
     }
 
     private void setProfileData(){
@@ -128,16 +125,6 @@ public class Profile extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Profile.this, setting.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-
-        //Home Navigation
-        homeChange.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Profile.this, Home.class);
                 startActivity(intent);
                 finish();
             }
@@ -290,8 +277,6 @@ public class Profile extends AppCompatActivity {
         // 1. Upload the image to your server
         // 2. Update the local storage
         // 3. Update the UI
-
-
         Toast.makeText(this, "Profile picture updated successfully", Toast.LENGTH_SHORT).show();
     }
 }

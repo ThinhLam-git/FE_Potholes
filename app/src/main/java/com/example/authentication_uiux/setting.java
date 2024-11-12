@@ -3,7 +3,9 @@ package com.example.authentication_uiux;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -13,9 +15,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class setting extends AppCompatActivity {
-    LinearLayout profile_change;
-    LinearLayout home_change;
     TextView logout;
+    ImageView profileChangeBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,22 +24,9 @@ public class setting extends AppCompatActivity {
         setContentView(R.layout.activity_setting);
 
         logout = findViewById(R.id.logout);
-        home_change = findViewById(R.id.home_change);
-        profile_change = findViewById(R.id.profile_change);
+        profileChangeBtn = findViewById(R.id.profile_change_btn);
 
-        // Setting button listener
-        home_change.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Start the setting activity
-                Intent intent = new Intent(setting.this, Home.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-
-        // Profile button listener
-        profile_change.setOnClickListener(new View.OnClickListener() {
+        profileChangeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Start the profile activity
