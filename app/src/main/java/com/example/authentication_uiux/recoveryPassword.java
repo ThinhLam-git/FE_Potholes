@@ -43,10 +43,7 @@ public class recoveryPassword extends AppCompatActivity {
         setupClickListeners();
 
         // Initialize Retrofit and ApiService
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.124.155:3000")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        Retrofit retrofit = RetrofitClient.getClient();
         apiService = retrofit.create(UserApi.class);
 
         // Retrieve email from intent

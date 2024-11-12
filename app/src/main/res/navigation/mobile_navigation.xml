@@ -20,6 +20,6 @@
     <fragment
         android:id="@+id/navigation_notifications"
         android:name="com.example.authentication_uiux.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
+        android:label="Setting"
         tools:layout="@layout/fragment_notifications" />
 </navigation>
