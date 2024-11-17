@@ -15,6 +15,8 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        resValue ("string", "mapTilerKey", "VenVnU9GMUe6pMfSsRfu")
     }
 
     buildTypes {
@@ -52,4 +54,5 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation ("com.squareup.okhttp3:logging-interceptor:4.9.0")
-}
+
+    implementation("org.maplibre.gl:android-sdk:10.0.2")}

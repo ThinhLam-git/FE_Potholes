@@ -40,6 +40,10 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBr98YJZZek25lHkP4_RumA9i1RbOCLsFc" />
 
+        <meta-data
+            android:name="com.maptiler.simplemap.mapTilerKey"
+            android:value="@string/mapTilerKey" />
+
         <activity
             android:name=".Home"
             android:exported="true" />

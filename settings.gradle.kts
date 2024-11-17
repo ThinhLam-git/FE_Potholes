@@ -16,6 +16,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven("https://dl.bintray.com/maplibre/maplibre-gl-native")
     }
 }
 
