@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -31,6 +33,7 @@ import androidx.fragment.app.Fragment;
 import com.example.authentication_uiux.R;
 import com.example.authentication_uiux.models.PotholeData;
 import com.example.authentication_uiux.API.PotholeApi;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.osmdroid.api.IMapController;
@@ -285,24 +288,48 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
     }
 
     private void showPotholePopup(GeoPoint location) {
-        if (popupView != null) return;
+        // Ensure we're on the main thread
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            new Handler(Looper.getMainLooper()).post(() -> showPotholePopup(location));
+            return;
+        }
+
+        // Remove any existing popup
+        removePopup();
 
         LayoutInflater inflater = LayoutInflater.from(requireContext());
         popupView = inflater.inflate(R.layout.popup_pothole, null);
 
-        Button btnConfirm = popupView.findViewById(R.id.btn_confirm);
+        // Find confirm button
+        MaterialButton btnConfirm = popupView.findViewById(R.id.btn_confirm);
         btnConfirm.setOnClickListener(v -> {
             savePotholeDataToMongoDB(location);
             removePopup();
         });
 
-        ((ViewGroup) requireView()).addView(popupView);
+        // Ensure the root view is not null
+        ViewGroup rootView = requireActivity().findViewById(android.R.id.content);
+        if (rootView != null) {
+            // Create layout params to center the popup
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            );
+            params.gravity = Gravity.CENTER;
+
+            rootView.addView(popupView, params);
+        }
+
+        // Auto-dismiss after 10 seconds
         popupHandler.postDelayed(this::removePopup, 10000);
     }
 
     private void removePopup() {
-        if (popupView != null && popupView.getParent() != null) {
-            ((ViewGroup) popupView.getParent()).removeView(popupView);
+        if (popupView != null) {
+            ViewGroup rootView = requireActivity().findViewById(android.R.id.content);
+            if (rootView != null) {
+                rootView.removeView(popupView);
+            }
             popupView = null;
         }
         popupHandler.removeCallbacksAndMessages(null);
