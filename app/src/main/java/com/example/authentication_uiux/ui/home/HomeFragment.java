@@ -382,10 +382,17 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
 
             if (delta > SHAKE_THRESHOLD && currentTime - lastAlertTime > ALERT_DELAY_MS) {
                 lastAlertTime = currentTime;
-                GeoPoint currentLocation = locationOverlay.getMyLocation();
-                if (currentLocation != null) {
-                    showPotholePopup(currentLocation);
-                }
+
+                // Use the main thread to show popup
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    // Ensure we have a valid location before showing popup
+                    GeoPoint currentLocation = locationOverlay.getMyLocation();
+                    if (currentLocation != null) {
+                        showPotholePopup(currentLocation);
+                    } else {
+                        showToast("Cannot determine current location");
+                    }
+                });
             }
         }
     }
