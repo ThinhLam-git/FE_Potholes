@@ -47,4 +47,5 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation ("org.osmdroid:osmdroid-android:6.1.12")
+    implementation ("com.google.android.gms:play-services-location:18.0.0")
 }

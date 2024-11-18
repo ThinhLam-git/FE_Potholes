@@ -2,12 +2,16 @@ package com.example.static_map_test;
 
 import static androidx.core.content.ContentProviderCompat.requireContext;
 
+import android.Manifest;
+
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.hardware.SensorListener;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.MapTileProviderArray;
@@ -25,6 +29,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,7 +37,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.material.button.MaterialButton;
 
 import java.io.File;
@@ -43,7 +51,7 @@ import java.io.InputStream;
 public class MainActivity extends AppCompatActivity implements SensorEventListener{
     private MapView mapView;
     private static final float SHAKE_THRESHOLD = 30.0f;
-
+    private FusedLocationProviderClient fusedLocationClient;
     private SensorManager sensorManager;
     private Sensor accelerometer;
     private boolean isPopupVisible = false;
@@ -56,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
         // Cấu hình OSMDroid
         Configuration.getInstance().setUserAgentValue(getPackageName());
@@ -100,7 +109,69 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         //Initialize handler
         handler = new Handler();
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        // Get current location
+        getCurrentLocation();
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getCurrentLocation(); // Gọi lại hàm để lấy vị trí
+            } else {
+                Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+
+    private void getCurrentLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // Request permissions if not granted
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            return;
+        }
+
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, location -> {
+                    if (location != null) {
+                        currentLocation = new GeoPoint(location.getLatitude(), location.getLongitude());
+                        mapView.getController().setCenter(currentLocation);
+                    } else {
+                        Toast.makeText(this, "Location is null", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Failed to get location: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void getCurrentLocationForMarker() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // Request permissions if not granted
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            return;
+        }
+
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, location -> {
+                    if (location != null) {
+                        // Convert the location to GeoPoint
+                        currentLocation = new GeoPoint(location.getLatitude(), location.getLongitude());
+                        // Add the marker at the current location
+                        addPotholeMarker(currentLocation);
+                    } else {
+                        Toast.makeText(this, "Unable to get location. Please try again.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
 
     private String copyMbTilesToInternalStorage() {
         File destinationFile = new File(getFilesDir(), "map.mbtiles");
@@ -186,7 +257,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         handler.postDelayed(dismissPopupRunnable, 10000); // 10 seconds
     }
 
-    private void showPotholeConfirmDialog(){
+    private void showPotholeConfirmDialog() {
         isPopupVisible = true;
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -194,27 +265,26 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         builder.setMessage("Do you want to mark this location as a pothole?");
         builder.setCancelable(false);
 
-        // Thêm nút Confirm
+        // Add "Confirm" button
         builder.setPositiveButton("Confirm", (dialog, which) -> {
-            addPotholeMarker(currentLocation);
+            getCurrentLocationForMarker(); // Lấy vị trí và thêm marker
             dialog.dismiss();
-            isPopupVisible = false;
+            isPopupVisible = false; // Đưa biến trạng thái về false
         });
 
-        // Tạo dialog
+        // Create and show the dialog
         currentPopup = builder.create();
         currentPopup.show();
 
-        // Đếm ngược và tự động đóng popup sau 10 giây
+        // Schedule auto-dismiss after 10 seconds
         dismissPopupRunnable = () -> {
             if (currentPopup != null && currentPopup.isShowing()) {
                 currentPopup.dismiss();
                 isPopupVisible = false;
             }
         };
-        handler.postDelayed(dismissPopupRunnable, 10000); // 10 giây
+        handler.postDelayed(dismissPopupRunnable, 10000); // 10 seconds
     }
-
     private void addPotholeMarker(GeoPoint location) {
         Marker marker = new Marker(mapView);
         marker.setPosition(location);
@@ -222,6 +292,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
         mapView.getOverlays().add(marker);
         mapView.invalidate();
+
+        // Center the map on the new marker
+        mapView.getController().setCenter(location);
     }
 
     @Override
