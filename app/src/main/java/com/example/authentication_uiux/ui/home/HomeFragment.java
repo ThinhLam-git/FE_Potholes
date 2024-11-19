@@ -303,6 +303,16 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
         // Find confirm button
         MaterialButton btnConfirm = popupView.findViewById(R.id.btn_confirm);
         btnConfirm.setOnClickListener(v -> {
+            // Center the map at the current location
+            mapController.setCenter(location);
+            mapController.setZoom(18.0); // Optional: Set zoom level
+
+            locationOverlay.disableMyLocation();
+
+            // Add a marker at the current location
+            addPotholeMarker(location);
+
+            // Save pothole data to MongoDB
             savePotholeDataToMongoDB(location);
             removePopup();
         });
