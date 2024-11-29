@@ -10,53 +10,36 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.example.authentication_uiux.Profile;
 import com.example.authentication_uiux.R;
-import com.example.authentication_uiux.databinding.FragmentNotificationsBinding;
 import com.example.authentication_uiux.welcome;
 
 public class NotificationsFragment extends Fragment {
 
-    private FragmentNotificationsBinding binding;
     private TextView logout;
     private ImageView profileChangeBtn;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.activity_setting, container, false);
 
-        // Khởi tạo các view
+        // Initialize views
         logout = root.findViewById(R.id.logout);
         profileChangeBtn = root.findViewById(R.id.profile_change_btn);
 
-        // Xử lý sự kiện click cho nút profile
-        profileChangeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), Profile.class);
-                startActivity(intent);
-                // Không gọi finish() vì đang ở trong Fragment
-            }
+        // Profile change button click handler
+        profileChangeBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), Profile.class);
+            startActivity(intent);
         });
 
-        // Xử lý sự kiện click cho logout
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), welcome.class);
-                startActivity(intent);
-                // Không gọi finish() vì đang ở trong Fragment
-                getActivity().finish(); // Đóng activity chứa fragment nếu cần
-            }
+        // Logout button click handler
+        logout.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), welcome.class);
+            startActivity(intent);
+            getActivity().finish(); // Close the current activity
         });
 
         return root;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
     }
 }

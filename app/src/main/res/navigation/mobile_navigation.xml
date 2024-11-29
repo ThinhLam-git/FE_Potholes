@@ -21,5 +21,5 @@
         android:id="@+id/navigation_notifications"
         android:name="com.example.authentication_uiux.ui.notifications.NotificationsFragment"
         android:label="Setting"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/fragment_setting" />
 </navigation>

@@ -24,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
     private UserApi apiService;
+    private BottomNavigationView navView;
+    private NavController navController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,23 +34,33 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        navView = findViewById(R.id.nav_view);
 
-        BottomNavigationView navView = findViewById(R.id.nav_view);
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
                 .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupWithNavController(binding.navView, navController);
 
         // Initialize Retrofit and ApiService
         Retrofit retrofit = RetrofitClient.getClient();
         apiService = retrofit.create(UserApi.class);
 
+        //Check if there's an intent to navigate to a specific tab
+        handleIntent();
+
         // Test the API
         testApi();
+    }
+
+    private void handleIntent() {
+        if(getIntent().hasExtra("SELECTED_TAB")){
+            String selectedTab = getIntent().getStringExtra("SELECTED_TAB");
+            if("setting_change".equals(selectedTab)){
+                navView.setSelectedItemId(R.id.navigation_notifications);
+                navController.navigate(R.id.navigation_notifications);
+            }
+        }
     }
 
     private void testApi() {

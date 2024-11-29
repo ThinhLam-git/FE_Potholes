@@ -102,7 +102,7 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
         initializeMap();
         setupRetrofit();
         return root;
-    }
+    }   
 
     private void initializeViews(View root) {
         mapView = root.findViewById(R.id.map);

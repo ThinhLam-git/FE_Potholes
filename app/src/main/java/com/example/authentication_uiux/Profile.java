@@ -20,6 +20,10 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+
+import com.example.authentication_uiux.ui.notifications.NotificationsFragment;
 
 public class Profile extends AppCompatActivity {
     private TextView profileImage, profileName, profileEmail, emailText, usernameText;
@@ -121,13 +125,11 @@ public class Profile extends AppCompatActivity {
         });
 
         //Setting Navigation
-        settingChange.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Profile.this, setting.class);
-                startActivity(intent);
-                finish();
-            }
+        settingChange.setOnClickListener(view -> {
+            Intent intent = new Intent(Profile.this, MainActivity.class);
+            intent.putExtra("SELECTED_TAB", "setting_change");
+            startActivity(intent);
+            finish();
         });
     }
 
