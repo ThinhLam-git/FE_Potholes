@@ -35,6 +35,12 @@ import com.example.authentication_uiux.models.PotholeData;
 import com.example.authentication_uiux.API.PotholeApi;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.graphhopper.GHRequest;
+import com.graphhopper.GHResponse;
+import com.graphhopper.GraphHopper;
+import com.graphhopper.config.Profile;
+import com.graphhopper.routing.util.EncodingManager;
+import com.graphhopper.util.shapes.GHPoint3D;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
@@ -49,6 +55,7 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.Polyline;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
@@ -57,6 +64,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -90,6 +98,7 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
     private PotholeApi potholeApi;
     private Marker currentLocationMarker;
     private boolean isLocationTracking = false;
+    private GraphHopper hopper;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -97,12 +106,19 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
         Configuration.getInstance().load(requireContext(), requireActivity().getPreferences(Context.MODE_PRIVATE));
 
         View root = inflater.inflate(R.layout.fragment_home, container, false);
+
         initializeViews(root);
+
         initializeSensors();
+
         initializeMap();
+
         setupRetrofit();
+
+        initializeGraphHopper("vietnam_latest.osm.pbf");
+
         return root;
-    }   
+    }
 
     private void initializeViews(View root) {
         mapView = root.findViewById(R.id.map);
@@ -383,6 +399,64 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
         mapView.invalidate();
     }
 
+    //Khởi tạo GraphHopper
+    private void initializeGraphHopper(String filePath) {
+        new Thread(() -> {
+            try {
+                hopper = new GraphHopper()
+                        .setOSMFile(filePath)
+                        .setGraphHopperLocation(requireContext().getFilesDir().getAbsolutePath())
+                        .setProfiles(new Profile("motorcycle").setVehicle("motorcycle").setWeighting("fastest"))
+                        .importOrLoad();
+            } catch (Exception e) {
+                Log.e("GraphHopper", "Error initializing GraphHopper", e);
+            }
+        }).start();
+    }
+
+    //Tính toán đường đi
+    private void calculateRoute(GeoPoint start, GeoPoint end) {
+        if (hopper == null) {
+            showToast("GraphHopper hasn't initialized yet!");
+            return;
+        }
+
+        new Thread(() -> {
+            GHRequest req = new GHRequest(
+                    start.getLatitude(), start.getLongitude(),
+                    end.getLatitude(), end.getLongitude()
+            ).setProfile("motorcycle").setLocale("en");
+
+            GHResponse resp = hopper.route(req);
+
+            if (resp.hasErrors()) {
+                Log.e(TAG, "Route errors: " + resp.getErrors());
+                showToast("Can't calculate route");
+                return;
+            }
+
+            List<GeoPoint> routePoints = new ArrayList<>();
+            for (GHPoint3D point : resp.getBest().getPoints()) {
+                routePoints.add(new GeoPoint(point.getLat(), point.getLon()));
+            }
+
+            requireActivity().runOnUiThread(() -> drawRouteOnMap(routePoints));
+        }).start();
+    }
+
+    //Vẽ đường đi trên bản đồ
+    private void drawRouteOnMap(List<GeoPoint> routePoints) {
+        Polyline routeOverlay = new Polyline();
+        routeOverlay.setPoints(routePoints);
+        routeOverlay.setColor(ContextCompat.getColor(requireContext(), R.color.red));
+        routeOverlay.setWidth(10.0f);
+
+        mapView.getOverlays().add(routeOverlay);
+        mapView.invalidate();
+    }
+
+
+
     // Sensor and lifecycle methods
     @Override
     public void onSensorChanged(SensorEvent event) {
@@ -421,8 +495,20 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
     @Override
     public boolean longPressHelper(GeoPoint p) {
         showPotholePopup(p);
+
+        if (currentLocationMarker == null) {
+            currentLocationMarker = new Marker(mapView);
+            currentLocationMarker.setPosition(p);
+            currentLocationMarker.setTitle("Start Point");
+            mapView.getOverlays().add(currentLocationMarker);
+        } else {
+            calculateRoute(currentLocationMarker.getPosition(), p);
+        }
+
         return true;
     }
+
+
 
     private float calculateShakeForce(float[] values) {
         float x = values[0];
