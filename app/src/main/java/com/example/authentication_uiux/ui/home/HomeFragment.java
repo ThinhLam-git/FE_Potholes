@@ -123,6 +123,7 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
         return root;
     }
 
+
     private void initializeViews(View root) {
         mapView = root.findViewById(R.id.map);
         searchEditText = root.findViewById(R.id.search_edit_text);
@@ -225,23 +226,27 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
 
     private void startLocationTracking() {
         locationOverlay.enableFollowLocation();
-        GeoPoint userLocation = locationOverlay.getMyLocation();
+        locationOverlay.runOnFirstFix(() -> {
+            GeoPoint userLocation = locationOverlay.getMyLocation();
 
-        if (userLocation != null) {
-            // Add current location marker
-            currentLocationMarker = new Marker(mapView);
-            currentLocationMarker.setPosition(userLocation);
-            currentLocationMarker.setTitle("Your Location");
-            mapView.getOverlays().add(currentLocationMarker);
+            if (userLocation != null) {
+                requireActivity().runOnUiThread(() -> {
+                    // Add current location marker
+                    currentLocationMarker = new Marker(mapView);
+                    currentLocationMarker.setPosition(userLocation);
+                    currentLocationMarker.setTitle("Your Location");
+                    mapView.getOverlays().add(currentLocationMarker);
 
-            mapController.setCenter(userLocation);
-            mapController.setZoom(18.0);
+                    mapController.setCenter(userLocation);
+                    mapController.setZoom(18.0);
 
-            isLocationTracking = true;
-            trackLocationButton.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
-        } else {
-            showToast("Unable to get current location");
-        }
+                    isLocationTracking = true;
+                    trackLocationButton.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
+                });
+            } else {
+                requireActivity().runOnUiThread(() -> showToast("Unable to get current location"));
+            }
+        });
     }
 
     private void stopLocationTracking() {
@@ -284,18 +289,25 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
                 Address address = addressList.get(0);
                 GeoPoint searchLocation = new GeoPoint(address.getLatitude(), address.getLongitude());
 
-                // Clear previous markers
+                // Lấy vị trí hiện tại
+                GeoPoint userLocation = locationOverlay.getMyLocation();
+
+                if (userLocation == null) {
+                    showToast("Unable to get current location");
+                    return;
+                }
+
+                // Vẽ đường dẫn từ vị trí hiện tại đến vị trí tìm kiếm
+                calculateRoute(userLocation, searchLocation);
+
+                // Xóa các overlay cũ và thêm marker mới cho vị trí tìm kiếm
                 mapView.getOverlays().clear();
 
-                // Add new search marker
                 Marker searchMarker = new Marker(mapView);
                 searchMarker.setPosition(searchLocation);
                 searchMarker.setTitle(address.getAddressLine(0));
                 mapView.getOverlays().add(searchMarker);
 
-                // Recenter map
-                mapController.setCenter(searchLocation);
-                mapController.setZoom(15.0);
                 mapView.invalidate();
             } else {
                 showToast("Location not found");
@@ -305,6 +317,7 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
             showToast("Search error");
         }
     }
+
 
     private void showPotholePopup(GeoPoint location) {
         // Ensure we're on the main thread
