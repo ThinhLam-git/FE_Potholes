@@ -70,6 +70,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -364,22 +365,31 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
     }
 
     private void savePotholeDataToMongoDB(GeoPoint location) {
+        if(location == null){
+            showToast("Invalid Location Data");
+            return;
+        }
+
+        // Định dạng thời gian
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));  // Đảm bảo lưu thời gian UTC
         String currentTime = sdf.format(new Date());
 
+        // Tạo đối tượng Ổ GÀ
         PotholeData potholeData = new PotholeData(
                 location.getLatitude(),
                 location.getLongitude(),
                 currentTime,
-                "User",
+                "ThinhTesting",
                 "reported"
         );
 
+        // Gửi yêu cầu Lưu dữ liệu lên mongoDB thông qua API
         potholeApi.addPothole(potholeData).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 if (response.isSuccessful()) {
-                    addPotholeMarker(location);
+                    addPotholeMarker(location); // Thêm marker ổ gà vào bản đồ
                     showToast("Pothole saved successfully");
                 } else {
                     showToast("Error saving pothole");
