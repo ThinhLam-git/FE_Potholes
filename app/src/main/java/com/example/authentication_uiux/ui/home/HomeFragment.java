@@ -3,6 +3,7 @@ package com.example.authentication_uiux.ui.home;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -28,6 +29,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.authentication_uiux.R;
@@ -394,9 +396,29 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
     private void addPotholeMarker(GeoPoint location) {
         Marker potholeMarker = new Marker(mapView);
         potholeMarker.setPosition(location);
+
+        //Thiết lập tiêu đề và mô tả
         potholeMarker.setTitle("Pothole");
+        potholeMarker.setSnippet("Location: " + location.getLatitude() + ", " + location.getLongitude() +
+                "\nDetected at: " + getCurrentTime());
+
+        Drawable icon = ResourcesCompat.getDrawable(getResources(), R.drawable.pothole_icon, null);
+        potholeMarker.setIcon(icon);
+
+        //Hiển thị bong bóng thông tin
+        potholeMarker.setOnMarkerClickListener((marker, mapView) -> {
+            marker.showInfoWindow();
+            return true; //Ngăn việc map di chuyển khi click vào marker
+        });
+
         mapView.getOverlays().add(potholeMarker);
-        mapView.invalidate();
+        mapView.invalidate(); //Redraw the map
+    }
+
+    // Hàm lấy thời gian hiện tại
+    private String getCurrentTime() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
+        return sdf.format(new Date());
     }
 
     //Khởi tạo GraphHopper
@@ -454,8 +476,6 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
         mapView.getOverlays().add(routeOverlay);
         mapView.invalidate();
     }
-
-
 
     // Sensor and lifecycle methods
     @Override
