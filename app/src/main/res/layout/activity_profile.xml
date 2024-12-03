@@ -260,6 +260,8 @@
                 android:orientation="vertical">
 
                 <!-- Updating Data Button -->
+
+                <!-- Rating App Button -->
                 <RelativeLayout
                     android:id="@+id/updating_data_button"
                     android:layout_width="match_parent"
@@ -274,8 +276,8 @@
                         android:drawablePadding="8dp"
                         android:text="Updating Data"
                         android:textColor="@color/white"
-                        android:textStyle="bold"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
 
                     <ImageView
                         android:layout_width="24dp"
@@ -284,7 +286,6 @@
                         android:src="@drawable/ic_arrow_right" />
                 </RelativeLayout>
 
-                <!-- Rating App Button -->
                 <RelativeLayout
                     android:id="@+id/rating_app_button"
                     android:layout_width="match_parent"

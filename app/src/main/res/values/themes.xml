@@ -2,6 +2,11 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.Authentication_UIUX" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
+        <item name="colorPrimary">#118844</item>
+        <item name="colorPrimaryVariant">#005533</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <!-- Secondary color -->
+        <item name="colorSecondary">#118844</item>
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 

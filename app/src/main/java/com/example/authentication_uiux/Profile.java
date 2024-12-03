@@ -107,7 +107,8 @@ public class Profile extends AppCompatActivity {
         updatingDataButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //...
+                Intent intent = new Intent(Profile.this, UpdatingData.class);
+                startActivity(intent);
             }
         });
 
@@ -120,7 +121,8 @@ public class Profile extends AppCompatActivity {
         companyInfoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //...
+                Intent intent = new Intent(Profile.this, AppInfo.class);
+                startActivity(intent);
             }
         });
 
