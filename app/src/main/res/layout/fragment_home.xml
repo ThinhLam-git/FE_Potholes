@@ -41,7 +41,7 @@
                 android:layout_height="24dp"
                 android:layout_marginEnd="12dp"
                 android:src="@android:drawable/ic_menu_search"
-                app:tint="#5F6368"/>
+                app:tint="#000000"/>
 
             <EditText
                 android:id="@+id/search_edit_text"

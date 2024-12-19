@@ -10,6 +10,8 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -35,6 +37,8 @@ import androidx.fragment.app.Fragment;
 import com.example.authentication_uiux.R;
 import com.example.authentication_uiux.models.PotholeData;
 import com.example.authentication_uiux.API.PotholeApi;
+import com.example.authentication_uiux.ui.home.MapComponents.LocationSearchManager;
+import com.example.authentication_uiux.ui.home.MapComponents.NavigationManager;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.graphhopper.GHRequest;
@@ -71,12 +75,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+import android.location.Location;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
 
 public class HomeFragment extends Fragment implements SensorEventListener, MapEventsReceiver {
     private static final String TAG = "HomeFragment";
@@ -103,6 +109,13 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
     private boolean isLocationTracking = false;
     private GraphHopper hopper;
 
+    private LocationSearchManager searchManager;
+    private NavigationManager navigationManager;
+    private Location currentLocation;
+    private LocationManager locationManager;
+    private Polyline routeOverlay;
+    private GeoPoint selectedLocation;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Initialize OSMDroid configuration
@@ -119,6 +132,9 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
         setupRetrofit();
 
         initializeGraphHopper("vietnam_latest.osm.pbf");
+
+        searchManager = new LocationSearchManager();
+        navigationManager = new NavigationManager();
 
         return root;
     }
@@ -273,51 +289,94 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
     }
 
     private void performSearch() {
-        String searchQuery = searchEditText.getText().toString().trim();
-        if (searchQuery.isEmpty()) {
-            showToast("Please enter an address");
-            return;
-        }
+        String query = searchEditText.getText().toString().trim();
+        if (!query.isEmpty()) {
+            searchManager.searchLocation(query, new LocationSearchManager.SearchCallBack() {
+                @Override
+                public void onLocationFound(double lat, double lon, String name) {
+                    selectedLocation = new GeoPoint(lat, lon);
 
-        // Hide keyboard
-        InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
+                    // Animate map to found location
+                    mapController.animateTo(selectedLocation);
+                    mapController.setZoom(16.0);
 
-        try {
-            List<Address> addressList = geocoder.getFromLocationName(searchQuery, 1);
-            if (addressList != null && !addressList.isEmpty()) {
-                Address address = addressList.get(0);
-                GeoPoint searchLocation = new GeoPoint(address.getLatitude(), address.getLongitude());
+                    // Add marker
+                    Marker marker = new Marker(mapView);
+                    marker.setPosition(selectedLocation);
+                    marker.setTitle(name);
+                    mapView.getOverlays().add(marker);
 
-                // Lấy vị trí hiện tại
-                GeoPoint userLocation = locationOverlay.getMyLocation();
-
-                if (userLocation == null) {
-                    showToast("Unable to get current location");
-                    return;
+                    // Show navigation option
+                    showNavigationOption(selectedLocation);
                 }
 
-                // Vẽ đường dẫn từ vị trí hiện tại đến vị trí tìm kiếm
-                calculateRoute(userLocation, searchLocation);
-
-                // Xóa các overlay cũ và thêm marker mới cho vị trí tìm kiếm
-                mapView.getOverlays().clear();
-
-                Marker searchMarker = new Marker(mapView);
-                searchMarker.setPosition(searchLocation);
-                searchMarker.setTitle(address.getAddressLine(0));
-                mapView.getOverlays().add(searchMarker);
-
-                mapView.invalidate();
-            } else {
-                showToast("Location not found");
-            }
-        } catch (IOException e) {
-            Log.e(TAG, "Geocoding error", e);
-            showToast("Search error");
+                @Override
+                public void onError(String message) {
+                    showToast(message);
+                }
+            });
+        } else {
+            showToast("Please enter a search query");
         }
     }
 
+    private void showNavigationOption(GeoPoint destination) {
+        GeoPoint currentLoc = locationOverlay.getMyLocation();
+        if (currentLoc != null) {
+            // Remove old route if exists
+            if (routeOverlay != null) {
+                mapView.getOverlays().remove(routeOverlay);
+            }
+
+            // Calculate new route
+            navigationManager.getRoute(currentLoc, destination,
+                    new NavigationManager.NavigationCallback() {
+                        @Override
+                        public void onRouteFound(ArrayList<GeoPoint> route, String duration, String distance) {
+
+                        }
+
+                        @Override
+                        public void onRouteFound(List<GeoPoint> route, String duration, String distance) {
+                            // Draw route
+                            routeOverlay = new Polyline();
+                            routeOverlay.setPoints(route);
+                            routeOverlay.setColor(ContextCompat.getColor(requireContext(), R.color.blue));
+                            routeOverlay.setWidth(5f);
+                            mapView.getOverlays().add(routeOverlay);
+
+                            // Show info
+                            showToast("Distance: " + distance + "\nDuration: " + duration);
+                            mapView.invalidate();
+                        }
+
+                        @Override
+                        public void onError(String message) {
+                            showToast(message);
+                        }
+                    });
+        } else {
+            showToast("Please enable location services to use navigation");
+        }
+    }
+
+    private void getCurrentLocation() {
+        if (ContextCompat.checkSelfPermission(requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        locationManager = (LocationManager) requireContext().getSystemService(Context.LOCATION_SERVICE);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0,
+                new LocationListener() {
+                    @Override
+                    public void onLocationChanged(@NonNull Location location) {
+                        currentLocation = location;
+                        locationManager.removeUpdates(this);
+                        showPotholePopup(new GeoPoint(location.getLatitude(), location.getLongitude()));
+                    }
+                });
+    }
 
     private void showPotholePopup(GeoPoint location) {
         // Ensure we're on the main thread
