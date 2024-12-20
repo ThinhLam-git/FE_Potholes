@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="100dp"
-        android:hint="Enter OTP"
+        android:hint="@string/Enter_OTP"
         android:inputType="number"
         android:padding="16dp"
         android:textSize="18sp" />
@@ -23,5 +23,5 @@
         android:layout_below="@id/otpInput"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:text="Verify OTP" />
+        android:text="@string/Verify_OTP" />
 </RelativeLayout>

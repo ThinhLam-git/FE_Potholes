@@ -123,7 +123,7 @@
                 android:layout_marginTop="167dp"
                 android:gravity="center_horizontal|center_vertical"
                 android:lineSpacingExtra="-32sp"
-                android:text="Statistics"
+                android:text="@string/Statistics"
                 android:textSize="20dp" />
 
             <RelativeLayout
@@ -449,7 +449,7 @@
                 android:layout_marginTop="302dp"
                 android:gravity="center_horizontal|center_vertical"
                 android:lineSpacingExtra="-19sp"
-                android:text="Distance Traveled"
+                android:text="@string/Distance_Traveled"
                 android:textSize="26dp" />
 
             <TextView
@@ -464,7 +464,7 @@
                 android:layout_marginEnd="249dp"
                 android:gravity="center_horizontal|center_vertical"
                 android:lineSpacingExtra="-24sp"
-                android:text="Potholes"
+                android:text="@string/Potholes"
                 android:textSize="26dp" />
 
             <RelativeLayout

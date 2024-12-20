@@ -50,7 +50,7 @@
                 android:layout_weight="1"
                 android:background="@null"
                 android:fontFamily="sans-serif-medium"
-                android:hint="Tìm kiếm địa điểm..."
+                android:hint="@string/Search_location"
                 android:imeOptions="actionSearch"
                 android:inputType="text"
                 android:textColor="#202124"

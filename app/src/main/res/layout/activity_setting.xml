@@ -17,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="Settings"
+            android:text="@string/Settings"
             android:textColor="#000000"
             android:textSize="40sp"
             android:textStyle="bold" />
@@ -48,7 +48,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Profile"
+                android:text="@string/Profile"
                 android:textStyle="bold"
                 android:textSize="20sp"
                 android:layout_alignParentLeft="true"
@@ -74,7 +74,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Sensitivity"
+                android:text="@string/Sensitivity"
                 android:textStyle="bold"
                 android:textSize="20sp"
                 android:layout_alignParentLeft="true"
@@ -109,7 +109,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Alert Distance Option"
+                android:text="@string/Alert_Distance_Option"
                 android:textStyle="bold"
                 android:textSize="20sp"
                 android:layout_alignParentLeft="true"
@@ -134,7 +134,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Vibration Alert"
+                android:text="@string/Vibration_Alert"
                 android:textStyle="bold"
                 android:textSize="20sp"
                 android:layout_alignParentLeft="true"
@@ -158,7 +158,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Dark Mode"
+                android:text="@string/Dark_Mode"
                 android:textStyle="bold"
                 android:textSize="20sp"
                 android:layout_alignParentLeft="true"
@@ -182,7 +182,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_arrow_right"
-                android:text="Account"
+                android:text="@string/Account"
                 android:textStyle="bold"
                 android:textSize="20sp"
                 android:layout_alignParentLeft="true"
@@ -205,7 +205,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingVertical="16dp"
-            android:text="Log out"
+            android:text="@string/Logout"
             android:clickable="true"
             android:textColor="#FF0000"
             android:textStyle="bold"
