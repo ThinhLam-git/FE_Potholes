@@ -1,6 +1,7 @@
 package com.example.authentication_uiux.ui.home;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
@@ -26,6 +27,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -116,6 +119,12 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
     private Polyline routeOverlay;
     private GeoPoint selectedLocation;
 
+    private Dialog navigationDialog;
+    private EditText editTextStart, editTextDestination;
+    private TextView textDistance, textDuration;
+    private LinearLayout layoutNavigationInfo;
+    private GeoPoint startPoint, endPoint;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Initialize OSMDroid configuration
@@ -135,6 +144,19 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
 
         searchManager = new LocationSearchManager();
         navigationManager = new NavigationManager();
+
+        initializeNavigationDialog();
+
+        FloatingActionButton navigationButton = root.findViewById(R.id.button_navigation);
+        navigationButton.setOnClickListener(v -> {
+            startPoint = null;
+            endPoint = null;
+            layoutNavigationInfo.setVisibility(View.GONE);
+            editTextStart.setText("");
+            editTextDestination.setText("");
+            navigationDialog.show();
+        });
+
 
         return root;
     }
@@ -214,6 +236,133 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
         // Map events overlay for tap interactions
         MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(this);
         mapView.getOverlays().add(mapEventsOverlay);
+    }
+
+    // Initialize the navigation dialog
+    private void initializeNavigationDialog() {
+        navigationDialog = new Dialog(requireContext());
+        navigationDialog.setContentView(R.layout.dialog_navigation);
+        navigationDialog.getWindow().setLayout(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        // Initialize views
+        editTextStart = navigationDialog.findViewById(R.id.edit_text_start);
+        editTextDestination = navigationDialog.findViewById(R.id.edit_text_destination);
+        textDistance = navigationDialog.findViewById(R.id.text_distance);
+        textDuration = navigationDialog.findViewById(R.id.text_duration);
+        layoutNavigationInfo = navigationDialog.findViewById(R.id.layout_navigation_info);
+        Button buttonNavigate = navigationDialog.findViewById(R.id.button_navigate);
+        Button buttonCancel = navigationDialog.findViewById(R.id.button_cancel);
+
+        // Setup search functionality for start location
+        editTextStart.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                searchLocation(editTextStart.getText().toString(), true);
+                return true;
+            }
+            return false;
+        });
+
+        // Setup search functionality for destination
+        editTextDestination.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                searchLocation(editTextDestination.getText().toString(), false);
+                return true;
+            }
+            return false;
+        });
+
+        // Setup navigation button
+        buttonNavigate.setOnClickListener(v -> {
+            if (startPoint != null && endPoint != null) {
+                calculateAndShowRoute();
+            } else {
+                showToast("Please select both locations");
+            }
+        });
+
+        // Setup cancel button
+        buttonCancel.setOnClickListener(v -> {
+            navigationDialog.dismiss();
+            clearNavigationRoute();
+        });
+    }
+
+
+    // Add this method to handle location search for navigation
+    private void searchLocation(String query, boolean isStart) {
+        searchManager.searchLocation(query, new LocationSearchManager.SearchCallBack() {
+            @Override
+            public void onLocationFound(double lat, double lon, String name) {
+                GeoPoint point = new GeoPoint(lat, lon);
+                if (isStart) {
+                    startPoint = point;
+                    editTextStart.setText(name);
+                } else {
+                    endPoint = point;
+                    editTextDestination.setText(name);
+                }
+
+                // If both points are set, calculate the route
+                if (startPoint != null && endPoint != null) {
+                    calculateAndShowRoute();
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+                showToast(message);
+            }
+        });
+    }
+
+    // Add this method to calculate and show the route
+    private void calculateAndShowRoute() {
+        if (startPoint == null || endPoint == null) return;
+
+        // Clear previous route
+        clearNavigationRoute();
+
+        navigationManager.getRoute(startPoint, endPoint, new NavigationManager.NavigationCallback() {
+            @Override
+            public void onRouteFound(ArrayList<GeoPoint> route, String duration, String distance) {
+
+            }
+
+            @Override
+            public void onRouteFound(List<GeoPoint> route, String duration, String distance) {
+                // Draw route
+                routeOverlay = new Polyline();
+                routeOverlay.setPoints(route);
+                routeOverlay.setColor(ContextCompat.getColor(requireContext(), R.color.blue));
+                routeOverlay.setWidth(5f);
+                mapView.getOverlays().add(routeOverlay);
+
+                // Show navigation info
+                layoutNavigationInfo.setVisibility(View.VISIBLE);
+                textDistance.setText("Distance: " + distance);
+                textDuration.setText("Duration: " + duration);
+
+                // Update map view to show the entire route
+                mapView.zoomToBoundingBox(routeOverlay.getBounds(), true, 100);
+                mapView.invalidate();
+            }
+
+            @Override
+            public void onError(String message) {
+                showToast(message);
+            }
+        });
+    }
+
+    // Add this method to clear the navigation route
+    private void clearNavigationRoute() {
+        if (routeOverlay != null) {
+            mapView.getOverlays().remove(routeOverlay);
+            routeOverlay = null;
+            mapView.invalidate();
+        }
     }
 
     private void setupButtons() {
