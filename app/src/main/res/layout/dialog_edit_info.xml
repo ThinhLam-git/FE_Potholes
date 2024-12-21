@@ -8,7 +8,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Edit Profile Information"
+        android:text="@string/Edit_Profile_Information"
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold" />
@@ -22,7 +22,7 @@
             android:id="@+id/username_edit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Username"
+            android:hint="@string/Username"
             android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -51,7 +51,7 @@
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cancel" />
+            android:text="@string/Cancel" />
 
         <Button
             android:id="@+id/save_button"
@@ -59,6 +59,6 @@
             android:backgroundTint="@color/primary_theme_color"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="Save" />
+            android:text="@string/Save" />
     </LinearLayout>
 </LinearLayout>

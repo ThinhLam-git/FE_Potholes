@@ -21,18 +21,27 @@
         android:layout_width="147dp"
         android:layout_height="133dp"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="19dp"
+        android:layout_marginEnd="131dp"
         android:background="@drawable/logo"
         android:elevation="8dp" />
 
-    <View
+    <TextView
         android:id="@+id/Sign_in"
-        android:layout_width="95dp"
-        android:layout_height="28dp"
+        android:layout_width="166dp"
+        android:layout_height="46dp"
         android:layout_below="@+id/logo"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/sign_in_text" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="116dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="113dp"
+        android:gravity="center"
+        android:text="@string/Sign_in"
+        android:textColor="#118844"
+        android:textSize="30sp"
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/Mail"
@@ -79,7 +88,7 @@
         android:layout_width="match_parent"
         android:layout_height="49dp"
         android:inputType="textPassword"
-        android:hint="Password"
+        android:hint="@string/Password"
         android:background="@android:color/transparent"
         android:layout_alignParentTop="true"
         android:gravity="center_vertical">
@@ -109,7 +118,7 @@
             android:id="@+id/checkBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Remember me"
+            android:text="@string/Remember_me"
             tools:ignore="MissingPrefix" />
 
         <TextView
@@ -118,7 +127,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
             android:layout_alignParentEnd="true"
-            android:text="Forget Password?"
+            android:text="@string/Forget_Password"
             android:textColor="#118844" />
     </RelativeLayout>
 
@@ -127,7 +136,7 @@
         android:id="@+id/buttonSignIn"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:text="SIGN IN"
+        android:text="@string/SIGN_IN"
         android:textColor="#FFFFFF"
         android:backgroundTint="#4CAF50"
         android:padding="12dp"
@@ -156,7 +165,7 @@
         android:layout_below="@+id/buttonSignIn"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
-        android:text="Or Continue With"
+        android:text="@string/Or_Continue_With"
         android:textColor="#5F605F"/>
 
     <ImageView
@@ -233,7 +242,7 @@
             android:id="@+id/Have1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Haven't had an account yet?"
+            android:text="@string/You_dont_have_an_account_yet"
             android:textColor="#5F605F"/>
 
         <TextView
@@ -241,7 +250,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/Have1"
-            android:text=" SIGN UP"
+            android:text="@string/SIGN_UP"
             android:textColor="#118844"
             />
     </RelativeLayout>

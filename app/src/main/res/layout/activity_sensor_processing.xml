@@ -9,7 +9,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Dữ liệu dao động thời gian thực:"
+        android:text="@string/Real_time_fluctuating_data"
         android:textSize="20sp"
         android:textStyle="bold"
         android:paddingBottom="16dp"/>
@@ -42,7 +42,7 @@
         android:id="@+id/shakeTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Đợi phát hiện rung lắc..."
+        android:text="@string/Wait_for_vibration_to_be_detected"
         android:textSize="24sp"
         android:textColor="#FF0000"
         android:paddingTop="16dp"/>

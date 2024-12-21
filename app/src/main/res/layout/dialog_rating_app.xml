@@ -8,7 +8,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Rate Our App"
+        android:text="@string/Rate_Our_App"
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold" />
@@ -30,6 +30,6 @@
         android:backgroundTint="@color/primary_theme_color"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="16dp"
-        android:text="Submit" />
+        android:text="@string/Submit" />
 
 </LinearLayout>

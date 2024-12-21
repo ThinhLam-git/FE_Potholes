@@ -27,13 +27,17 @@
         android:background="@drawable/arrow_login"
         android:elevation="8dp" />
 
-    <View
+    <TextView
         android:id="@+id/Sign_up"
-        android:layout_width="95dp"
-        android:layout_height="28dp"
+        android:layout_width="169dp"
+        android:layout_height="45dp"
         android:layout_below="@+id/logo"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/sign_up_text" />
+        android:gravity="center"
+        android:text="@string/Sign_up"
+        android:textColor="#118844"
+        android:textSize="30sp"
+        android:textStyle="bold" />
 
 
     <TextView
@@ -43,7 +47,7 @@
         android:layout_below="@+id/Sign_up"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
-        android:text="Create your new account"
+        android:text="@string/Create_your_new_account"
         android:textColor="#5F605F"/>
 
     <EditText
@@ -54,7 +58,7 @@
         android:layout_marginTop="20dp"
         android:layout_centerHorizontal="true"
         android:radius="20dp"
-        android:hint="Fullname"
+        android:hint="@string/Fullname"
         android:paddingLeft="60dp"
         android:background="#ebfdf2"
         />
@@ -110,7 +114,7 @@
             android:layout_width="match_parent"
             android:layout_height="49dp"
             android:inputType="textPassword"
-            android:hint="Password"
+            android:hint="@string/Password"
             android:background="@android:color/transparent"
             android:layout_alignParentTop="true"
             android:gravity="center_vertical">
@@ -145,7 +149,7 @@
             android:layout_width="match_parent"
             android:layout_height="49dp"
             android:inputType="textPassword"
-            android:hint="Confirm Password"
+            android:hint="@string/Confirm_Password"
             android:background="@android:color/transparent"
             android:layout_alignParentTop="true"
             android:gravity="center_vertical">
@@ -189,32 +193,33 @@
         android:id="@+id/groupCB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_below="@+id/ConfirmPass_layout"
-        >
+        android:layout_centerHorizontal="true">
 
         <CheckBox
-            tools:ignore="MissingPrefix"
             android:id="@+id/checkBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="I understood the " />
+            android:gravity="center"
+            android:text="@string/I_understood_the"
+            tools:ignore="MissingPrefix" />
 
         <TextView
             android:id="@+id/Policy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="14dp"
             android:layout_toEndOf="@id/checkBox"
             android:clickable="true"
-            android:text="term &amp; policy."
-            android:layout_marginTop="14dp"
+            android:text="@string/terms_and_policies"
             android:textColor="#118844" />
     </RelativeLayout>
     <Button
         android:id="@+id/buttonSignUp"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:text="SIGN UP"
+        android:text="@string/SIGN_UP"
         android:textColor="#FFFFFF"
         android:backgroundTint="#118844"
         android:padding="12dp"
@@ -243,7 +248,7 @@
         android:layout_below="@+id/buttonSignUp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:text="Or Continue With"
+        android:text="@string/Or_Continue_With"
         android:textColor="#5F605F"/>
 
     <ImageView
@@ -321,7 +326,7 @@
         android:id="@+id/Have1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Have an account?"
+        android:text="@string/Have_an_account"
         android:textColor="#5F605F"/>
 
     <TextView
@@ -329,7 +334,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/Have1"
-        android:text=" SIGN IN"
+        android:text="@string/SIGN_IN"
         android:textColor="#118844"
         />
     </RelativeLayout>

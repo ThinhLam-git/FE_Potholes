@@ -176,7 +176,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="INFORMATION"
+                    android:text="@string/INFORMATION"
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -186,7 +186,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:text="Edit"
+                    android:text="@string/Edit"
                     android:clickable="true"
                     android:textColor="#118844"
                     android:textSize="14sp" />
@@ -232,7 +232,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Username"
+                    android:text="@string/Username"
                     android:textColor="@color/gray"
                     android:textSize="14sp" />
 
@@ -274,7 +274,7 @@
                         android:layout_height="wrap_content"
                         android:drawableStart="@drawable/storage"
                         android:drawablePadding="8dp"
-                        android:text="Updating Data"
+                        android:text="@string/Update_Data"
                         android:textColor="@color/white"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -299,7 +299,7 @@
                         android:layout_height="wrap_content"
                         android:drawableStart="@drawable/star_purple500"
                         android:drawablePadding="8dp"
-                        android:text="Rating App"
+                        android:text="@string/Rating_App"
                         android:textStyle="bold"
                         android:textColor="@color/white"
                         android:textSize="16sp" />
@@ -325,7 +325,7 @@
                         android:layout_height="wrap_content"
                         android:drawableStart="@drawable/perm_device_information"
                         android:drawablePadding="8dp"
-                        android:text="Company Information"
+                        android:text="@string/Company_Information"
                         android:textStyle="bold"
                         android:textColor="@color/white"
                         android:textSize="16sp" />

@@ -21,31 +21,39 @@
     <!-- Welcome Text -->
 
     <!-- Logo Image -->
+
+    <!-- Sign In Button -->
+
     <TextView
         android:id="@+id/welcome_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="329dp"
+        android:layout_height="162dp"
         android:layout_below="@id/language_set"
-        android:layout_marginTop="-10dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="-20dp"
+        android:layout_marginEnd="34dp"
         android:fontFamily="sans-serif-medium"
+        android:gravity="center"
         android:letterSpacing="0.03"
         android:lineSpacingExtra="5sp"
-        android:text="Welcome to your safety"
+        android:text="@string/welcome_to_your_safe_route"
         android:textColor="#118844"
         android:textFontWeight="700"
-        android:textSize="36sp" />
+        android:textSize="37sp" />
 
     <ImageView
         android:id="@+id/logo"
         android:layout_width="350dp"
         android:layout_height="350dp"
         android:layout_below="@id/welcome_text"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="60dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="40dp"
         android:contentDescription="Logo"
         android:src="@drawable/logo2" />
 
-    <!-- Sign In Button -->
     <Button
         android:id="@+id/sign_in_button"
         android:layout_width="300dp"
@@ -54,7 +62,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="60dp"
         android:backgroundTint="#118844"
-        android:text="SIGN IN"
+        android:text="@string/SIGN_IN"
         android:textAllCaps="true"
         android:textColor="#FFFFFF"
         android:textSize="18sp" />
@@ -68,7 +76,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
         android:backgroundTint="#FFFFFF"
-        android:text="SIGN UP"
+        android:text="@string/SIGN_UP"
         android:textAllCaps="true"
         android:textColor="#118844"
         android:textSize="18sp"

@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:fontFamily="sans-serif-medium"
-        android:text="Confirmed Pothole?"
+        android:text="@string/Confirmed_Pothole"
         android:textColor="@color/text_primary"
         android:textSize="20sp"
         android:textStyle="bold" />
@@ -37,7 +37,7 @@
         android:layout_marginBottom="16dp"
         android:backgroundTint="@color/primary_theme_color"
         android:paddingVertical="12dp"
-        android:text="Confirm"
+        android:text="@string/Confirm"
         android:textAllCaps="false"
         android:textSize="16sp"
         app:cornerRadius="8dp"
@@ -52,7 +52,7 @@
         android:drawableStart="@drawable/ic_timer"
         android:drawablePadding="8dp"
         android:gravity="center"
-        android:text="Pop-up will be hidden in 10s"
+        android:text="Pop_up_will_be_hidden_in_10s"
         android:textColor="@color/text_secondary"
         android:textSize="14sp" />
 
