@@ -31,4 +31,7 @@ public interface UserApi {
 
     @PATCH("/user/change")
     Call<ChangePasswordResponse> changePassword(@Body ChangePasswordRequest changePasswordRequest);
+
+    @POST("/logout")
+    Call<Void> logoutUser();
 }
