@@ -48,7 +48,9 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBr98YJZZek25lHkP4_RumA9i1RbOCLsFc" />
 
-
+        <activity
+            android:name=".Home"
+            android:exported="true" />
         <activity
             android:name=".Term_Policy_Main"
             android:exported="true" />
@@ -79,6 +81,7 @@
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
