@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import com.example.authentication_uiux.API.PotholeApi;
 import com.example.authentication_uiux.R;
 import com.example.authentication_uiux.RetrofitClient;
+import com.example.authentication_uiux.models.pothhole.PotholeStatistics;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -27,24 +28,24 @@ public class DashboardFragment extends Fragment {
         Retrofit retrofit = RetrofitClient.getClient();
         potholeApi = retrofit.create(PotholeApi.class);
 
-        fetchTotalPotholes();
+        fetchPotholeStatistics();
 
         return root;
     }
 
-    private void fetchTotalPotholes() {
-        potholeApi.getTotalPotholes().enqueue(new Callback<Integer>() {
+    private void fetchPotholeStatistics() {
+        potholeApi.getPotholeStatistics().enqueue(new Callback<PotholeStatistics>() {
             @Override
-            public void onResponse(@NonNull Call<Integer> call, @NonNull Response<Integer> response) {
+            public void onResponse(@NonNull Call<PotholeStatistics> call, @NonNull Response<PotholeStatistics> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    totalPotholesTextView.setText("Total Potholes: " + response.body());
+                    totalPotholesTextView.setText("Total Potholes: " + response.body().getTotalPotholes());
                 } else {
                     totalPotholesTextView.setText("Failed to fetch data");
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<Integer> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<PotholeStatistics> call, @NonNull Throwable t) {
                 totalPotholesTextView.setText("Error: " + t.getMessage());
             }
         });
