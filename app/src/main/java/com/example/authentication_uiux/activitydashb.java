@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 public class activitydashb extends AppCompatActivity {
 
-    private ArrayList barArrayList ;
+    private ArrayList<BarEntry> barArrayList;
 
 
     @Override
@@ -32,7 +32,7 @@ public class activitydashb extends AppCompatActivity {
             return insets;
         });
         BarChart barChart = findViewById(R.id.barChart);
-        //getData();
+        getData();
         BarDataSet barDataSet = new BarDataSet(barArrayList, "Bar Data");
         BarData barData = new BarData(barDataSet);
         barChart.setData(barData);
