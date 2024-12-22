@@ -1,3 +1,4 @@
+// welcome.java
 package com.example.authentication_uiux;
 
 import android.content.Intent;
@@ -24,7 +25,7 @@ public class welcome extends AppCompatActivity {
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent1 = new Intent(welcome.this, MainActivity.class);
+                Intent intent1 = new Intent(welcome.this, Sign_In_Activity.class);
                 startActivity(intent1);
             }
         });
