@@ -3,6 +3,7 @@ package com.example.authentication_uiux.ui.home;
 import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
@@ -37,6 +38,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.authentication_uiux.Config;
 import com.example.authentication_uiux.R;
 import com.example.authentication_uiux.models.PotholeData;
 import com.example.authentication_uiux.API.PotholeApi;
@@ -86,13 +88,11 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-
 public class HomeFragment extends Fragment implements SensorEventListener, MapEventsReceiver {
     private static final String TAG = "HomeFragment";
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
     private static final float SHAKE_THRESHOLD = 30.0f;
     private static final long ALERT_DELAY_MS = 5000;
-    private static final String BASE_URL = "http://192.168.124.155:3000/";
 
     private MapView mapView;
     private IMapController mapController;
@@ -125,21 +125,21 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
     private LinearLayout layoutNavigationInfo;
     private GeoPoint startPoint, endPoint;
 
+    private String username;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Initialize OSMDroid configuration
         Configuration.getInstance().load(requireContext(), requireActivity().getPreferences(Context.MODE_PRIVATE));
-
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
+        // Initialize username
+        username = getUsernameFromAuth();
+
         initializeViews(root);
-
         initializeSensors();
-
         initializeMap();
-
         setupRetrofit();
-
         initializeGraphHopper("vietnam_latest.osm.pbf");
 
         searchManager = new LocationSearchManager();
@@ -585,45 +585,57 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
         popupHandler.removeCallbacksAndMessages(null);
     }
 
+    private String getUsernameFromAuth() {
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("auth_prefs", Context.MODE_PRIVATE);
+        return sharedPreferences.getString("username", "default_username"); // Replace "default_username" with a suitable default value
+    }
+
     private void savePotholeDataToMongoDB(GeoPoint location) {
         if(location == null){
             showToast("Invalid Location Data");
             return;
         }
 
-        // Định dạng thời gian
+        // Format the current time
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
-        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));  // Đảm bảo lưu thời gian UTC
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));  // Ensure UTC time
         String currentTime = sdf.format(new Date());
 
-        // Tạo đối tượng Ổ GÀ
+        // Create PotholeData object
         PotholeData potholeData = new PotholeData(
                 location.getLatitude(),
                 location.getLongitude(),
                 currentTime,
-                "ThinhTesting",
+                username,
                 "reported"
         );
 
-        // Gửi yêu cầu Lưu dữ liệu lên mongoDB thông qua API
+        // Use Retrofit to upload the pothole data
         potholeApi.addPothole(potholeData).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 if (response.isSuccessful()) {
-                    addPotholeMarker(location); // Thêm marker ổ gà vào bản đồ
+                    addPotholeMarker(location); // Add pothole marker to the map
                     showToast("Pothole saved successfully");
                 } else {
-                    showToast("Error saving pothole");
+                    try {
+                        String errorBody = response.errorBody().string();
+                        Log.e(TAG, "Error saving pothole: " + errorBody);
+                        showToast("Error saving pothole: " + errorBody);
+                    } catch (IOException e) {
+                        Log.e(TAG, "Error reading error body", e);
+                        showToast("Error saving pothole");
+                    }
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
-                showToast("Network error");
+                Log.e(TAG, "Network error", t);
+                showToast("Network error: " + t.getMessage());
             }
         });
     }
-
     private void addPotholeMarker(GeoPoint location) {
         Marker potholeMarker = new Marker(mapView);
         potholeMarker.setPosition(location);
@@ -774,7 +786,7 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
 
     private void setupRetrofit() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(Config.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         potholeApi = retrofit.create(PotholeApi.class);
