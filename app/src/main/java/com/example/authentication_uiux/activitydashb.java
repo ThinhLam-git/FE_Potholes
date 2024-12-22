@@ -1,4 +1,4 @@
-package com.example.authentication_uiux.ui.dashboard;
+package com.example.authentication_uiux;
 
 import android.os.Bundle;
 
@@ -8,7 +8,6 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.authentication_uiux.R;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -17,22 +16,23 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
 
+public class activitydashb extends AppCompatActivity {
 
-public class DashBoard extends AppCompatActivity {
+    private ArrayList barArrayList ;
 
-    ArrayList barArrayList ;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_dash_board);
+        setContentView(R.layout.activity_activitydashb);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
         BarChart barChart = findViewById(R.id.barChart);
-        getData();
+        //getData();
         BarDataSet barDataSet = new BarDataSet(barArrayList, "Bar Data");
         BarData barData = new BarData(barDataSet);
         barChart.setData(barData);
@@ -45,7 +45,6 @@ public class DashBoard extends AppCompatActivity {
         barChart.animateY(2000);
 
     }
-
     private void getData()
     {
         barArrayList = new ArrayList();
@@ -58,4 +57,5 @@ public class DashBoard extends AppCompatActivity {
         barArrayList.add(new BarEntry(8f,70));
 
     }
+
 }
