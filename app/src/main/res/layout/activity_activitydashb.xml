@@ -43,14 +43,58 @@
         android:layout_marginTop="65dp"
         tools:layout_editor_absoluteY="16dp" />
 
-    <View
-        android:id="@+id/greennumb"
+    <ImageView
+        android:id="@+id/pothole"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="60dp"
         android:src="@drawable/greennumb"
+        app:layout_constraintTop_toBottomOf="@id/barChart"
+        app:layout_constraintStart_toStartOf="parent"
+        />
 
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+    <ImageView
+        android:id="@+id/km"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="60dp"
+        android:src="@drawable/greennumb"
+        app:layout_constraintTop_toBottomOf="@id/barChart"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        />
+
+    <TextView
+        android:id="@+id/textKM"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="40"
+        tools:layout_editor_absoluteX="270dp"
+        tools:layout_editor_absoluteY="387dp"
+        app:layout_constraintTop_toTopOf="@id/km"
+        app:layout_constraintEnd_toEndOf="@id/km"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="20dp"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:textSize="50sp"/>
+
+
+    <TextView
+        android:id="@+id/textPH"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        tools:layout_editor_absoluteX="80dp"
+        tools:layout_editor_absoluteY="387dp"
+        app:layout_constraintTop_toTopOf="@id/pothole"
+        app:layout_constraintEnd_toEndOf="@id/pothole"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="35dp"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:textSize="50sp"/>
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
