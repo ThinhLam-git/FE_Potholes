@@ -31,26 +31,26 @@
         app:layout_constraintTop_toBottomOf="@id/back_button" />
 
     <!-- "Select Language" Text -->
+
+    <!-- RadioGroup for language selection -->
     <TextView
         android:id="@+id/select_language_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:fontFamily="sans-serif-medium"
         android:text="@string/select_language"
         android:textColor="@color/primary_theme_color"
-        android:textSize="24sp"
+        android:textSize="34sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/logo" />
 
-    <!-- RadioGroup for language selection -->
     <RadioGroup
         android:id="@+id/language_radio_group"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="166dp"
+        android:layout_height="100dp"
         android:layout_marginTop="36dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -60,13 +60,15 @@
             android:id="@+id/english_radio_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="English" />
+            android:text="English"
+            android:textSize="24sp" />
 
         <RadioButton
             android:id="@+id/vietnamese_radio_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Vietnamese" />
+            android:text="Vietnamese"
+            android:textSize="24sp" />
 
 
     </RadioGroup>

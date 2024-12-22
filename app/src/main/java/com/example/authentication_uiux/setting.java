@@ -17,6 +17,7 @@ import androidx.core.view.WindowInsetsCompat;
 public class setting extends AppCompatActivity {
     TextView logout;
     ImageView profileChangeBtn;
+    ImageView languageChangeBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +26,7 @@ public class setting extends AppCompatActivity {
 
         logout = findViewById(R.id.logout);
         profileChangeBtn = findViewById(R.id.profile_change_btn);
+        languageChangeBtn = findViewById(R.id.language_change_btn);
 
         profileChangeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -34,6 +36,11 @@ public class setting extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             }
+        });
+
+        languageChangeBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(setting.this, languageSetting.class);
+            startActivity(intent);
         });
 
         //Logout click listener

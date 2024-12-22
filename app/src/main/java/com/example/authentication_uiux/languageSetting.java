@@ -54,8 +54,7 @@ public class languageSetting extends AppCompatActivity {
         editor.putString("selected_language", languageCode);
         editor.apply();
 
-        Intent refresh = new Intent(this, languageSetting.class);
-        startActivity(refresh);
+        // Quay trở lại màn hình trước đó
         finish();
     }
 }
