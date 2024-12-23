@@ -105,6 +105,26 @@
         android:layout_marginTop="50dp"
         />
 
+    <ImageView
+        android:id="@+id/potholetext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/potholestext"
+        app:layout_constraintTop_toBottomOf="@id/pothole"
+        app:layout_constraintStart_toStartOf="@id/pothole"
+        android:layout_marginTop="8dp"
+        />
+
+    <ImageView
+        android:id="@+id/kmtext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/kmtext"
+        app:layout_constraintTop_toBottomOf="@id/km"
+        app:layout_constraintStart_toStartOf="@id/km"
+        android:layout_marginTop="8dp"
+        />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
