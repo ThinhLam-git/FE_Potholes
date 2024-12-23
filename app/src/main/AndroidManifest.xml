@@ -67,9 +67,12 @@
         <activity
             android:name=".setting"
             android:exported="true" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBr98YJZZek25lHkP4_RumA9i1RbOCLsFc" />
+
+
         <activity
             android:name=".Term_Policy_Main"
             android:exported="true" />
@@ -96,7 +99,7 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="true" />
+            android:exported="false" />
     </application>
 
 </manifest>

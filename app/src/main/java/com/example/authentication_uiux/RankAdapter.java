@@ -3,14 +3,10 @@ package com.example.authentication_uiux;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.authentication_uiux.models.RankData;
-
 import java.util.List;
 
 public class RankAdapter extends RecyclerView.Adapter<RankAdapter.RankViewHolder> {
@@ -31,7 +27,7 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.RankViewHolder
     @Override
     public void onBindViewHolder(@NonNull RankViewHolder holder, int position) {
         RankData item = rankData.get(position);
-        holder.bind(item, position + 4); // +4 because top 3 are displayed separately
+        holder.bind(item, position + 1);
     }
 
     @Override
@@ -41,21 +37,18 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.RankViewHolder
 
     static class RankViewHolder extends RecyclerView.ViewHolder {
         TextView rankNumber;
-        ImageView avatar;
         TextView name;
         TextView score;
 
         RankViewHolder(@NonNull View itemView) {
             super(itemView);
             rankNumber = itemView.findViewById(R.id.rank_number);
-            avatar = itemView.findViewById(R.id.avatar);
             name = itemView.findViewById(R.id.name);
             score = itemView.findViewById(R.id.score);
         }
 
         void bind(RankData item, int position) {
             rankNumber.setText(String.valueOf(position));
-            avatar.setImageResource(item.getAvatarResource());
             name.setText(item.getName());
             score.setText(String.valueOf(item.getScore()));
         }
