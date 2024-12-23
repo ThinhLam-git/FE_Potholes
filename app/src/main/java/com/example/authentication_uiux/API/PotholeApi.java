@@ -1,6 +1,7 @@
 package com.example.authentication_uiux.API;
 
 import com.example.authentication_uiux.models.PotholeData;
+import com.example.authentication_uiux.models.RankData;
 import com.example.authentication_uiux.models.pothhole.PotholeStatistics;
 
 import java.util.List;
@@ -23,4 +24,7 @@ public interface PotholeApi {
 
     @PUT("api/potholes/updatePotholeStatus")
     Call<Void> updatePotholeStatus(@Body PotholeData potholeData);
+
+    @GET("api/potholes/ranking")
+    Call<List<RankData>> getUserRankings();
 }

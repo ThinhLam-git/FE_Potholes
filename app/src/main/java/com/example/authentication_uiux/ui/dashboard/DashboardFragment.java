@@ -1,14 +1,17 @@
 package com.example.authentication_uiux.ui.dashboard;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import com.example.authentication_uiux.API.PotholeApi;
 import com.example.authentication_uiux.R;
+import com.example.authentication_uiux.Rank;
 import com.example.authentication_uiux.RetrofitClient;
 import com.example.authentication_uiux.models.pothhole.PotholeStatistics;
 import com.github.mikephil.charting.charts.BarChart;
@@ -27,6 +30,7 @@ public class DashboardFragment extends Fragment {
     private TextView textKM;
     private BarChart barChart;
     private PotholeApi potholeApi;
+    private Button rankButton;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -34,12 +38,18 @@ public class DashboardFragment extends Fragment {
         textPH = root.findViewById(R.id.textPH);
         textKM = root.findViewById(R.id.textKM);
         barChart = root.findViewById(R.id.barChart);
+        rankButton = root.findViewById(R.id.rank_button);
 
         Retrofit retrofit = RetrofitClient.getClient();
         potholeApi = retrofit.create(PotholeApi.class);
 
         fetchPotholeStatistics();
         setupBarChart();
+
+        rankButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), Rank.class);
+            startActivity(intent);
+        });
 
         return root;
     }
