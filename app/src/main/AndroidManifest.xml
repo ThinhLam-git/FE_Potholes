@@ -5,6 +5,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
@@ -22,6 +24,16 @@
         android:theme="@style/Theme.Authentication_UIUX"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <service
+            android:name=".ui.home.MapComponents.PotholeAlertService"
+            android:enabled="true"
+            android:exported="true"></service>
+        <service
+            android:name=".ui.home.MapComponents.NavigationService"
+            android:enabled="true"
+            android:exported="true"
+            android:foregroundServiceType="location" />
+
         <activity
             android:name=".SplashScreen"
             android:exported="true">
