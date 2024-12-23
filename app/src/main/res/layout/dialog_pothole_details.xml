@@ -8,28 +8,28 @@
         android:id="@+id/latitude_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Latitude: "
+        android:text="@string/Latitude"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/longitude_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Longitude: "
+        android:text="@string/Longitude"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/user_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Reported by: "
+        android:text="@string/Reported_by"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/detection_time_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Detected at: "
+        android:text="@string/Detected_at"
         android:textStyle="bold" />
 
     <Spinner

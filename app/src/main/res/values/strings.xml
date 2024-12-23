@@ -67,6 +67,18 @@
     <string name="Pop_up_will_be_hidden_in_10s">Pop-up will be hidden in 10s</string>
     <string name="Sign_up">Sign up</string>
     <string name="Sign_in">Sign in</string>
+    <string name="Total_Potholes">Total Potholes</string>"
+    <string name="Total_Kilometers">Total_Kilometers</string>
+    <string name="Loading">Loading...</string>
+    <string name="Navigation">Navigation</string>
+    <string name="Start_Location">Start Location</string>
+    <string name="Destination">Destination</string>
+    <string name="Navigate">Navigate</string>
+    <string name="Latitude">Latitude :</string>
+    <string name="Longitude">Longitude :</string>
+    <string name="Reported_by">Reported by :</string>
+    <string name="Detected_at">Detected at :</string>
+    <string name="Status">Status :</string>
 
     <string name="app_name">Authentication_UIUX</string>
     <string name="item_title">Item Title</string>

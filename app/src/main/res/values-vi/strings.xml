@@ -67,6 +67,18 @@
     <string name="Pop_up_will_be_hidden_in_10s">Cửa sổ bật lên sẽ bị ẩn trong 10 giây</string>
     <string name="Sign_up">Đăng ký</string>
     <string name="Sign_in">Đăng nhập</string>
+    <string name="Total_Potholes">Tổng ổ gà</string>"
+    <string name="Total_Kilometers">Tổng Km đã đi</string>
+    <string name="Loading">Đang tải...</string>
+    <string name="Navigation">Lộ Trình</string>
+    <string name="Start_Location">Nơi bắt đầu</string>
+    <string name="Destination">Nơi đến</string>
+    <string name="Navigate">Tìm đường</string>
+    <string name="Latitude">Vĩ độ :</string>
+    <string name="Longitude">Kinh độ :</string>
+    <string name="Reported_by">báo cáo bởi :</string>
+    <string name="Detected_at">Phat hiện vào :</string>
+    <string name="Status">Tình trạng :</string>
 
     <string name="app_name">Authentication_UIUX</string>
     <string name="item_title">Tiêu đề mục</string>
@@ -75,4 +87,5 @@
     <string name="title_home">Trang chủ</string>
     <string name="title_dashboard">Bảng điều khiển</string>
     <string name="title_setting">Cài đặt</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
