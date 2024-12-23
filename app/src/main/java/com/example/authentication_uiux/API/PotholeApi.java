@@ -1,6 +1,8 @@
 package com.example.authentication_uiux.API;
 
 import com.example.authentication_uiux.models.PotholeData;
+import com.example.authentication_uiux.models.pothhole.PotholeStatistics;
+
 
 import java.util.List;
 
@@ -13,6 +15,9 @@ import retrofit2.http.PUT;
 public interface PotholeApi {
     @POST("api/potholes/addPothole")
     Call<Void> addPothole(@Body PotholeData potholeData);
+
+    @GET("api/potholes/total")
+    Call<PotholeStatistics> getPotholeStatistics();
 
     // Thêm API mới để lấy danh sách ổ gà
     @GET("/api/potholes/getPotholes")
