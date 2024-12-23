@@ -16,7 +16,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Navigation"
+            android:text="@string/Navigation"
             android:textSize="20sp"
             android:textStyle="bold"
             android:layout_marginBottom="16dp"/>
@@ -38,7 +38,7 @@
                     android:id="@+id/edit_text_start"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Start Location"
+                    android:hint="@string/Start_Location"
                     android:inputType="text"
                     android:imeOptions="actionNext"/>
             </com.google.android.material.textfield.TextInputLayout>
@@ -70,7 +70,7 @@
                     android:id="@+id/edit_text_destination"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Destination"
+                    android:hint="@string/Destination"
                     android:inputType="text"
                     android:imeOptions="actionDone"/>
             </com.google.android.material.textfield.TextInputLayout>
@@ -121,7 +121,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginEnd="8dp"
-                android:text="Cancel"
+                android:text="@string/Cancel"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
 
             <Button
@@ -129,7 +129,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Navigate"
+                android:text="@string/Navigate"
                 style="@style/Widget.MaterialComponents.Button"/>
         </LinearLayout>
     </LinearLayout>
