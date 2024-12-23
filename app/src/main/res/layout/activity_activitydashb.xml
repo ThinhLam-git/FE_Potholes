@@ -95,6 +95,42 @@
         android:textStyle="bold"
         android:textSize="50sp"/>
 
+    <ImageView
+        android:id="@+id/maptohome"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/maptohome"
+        app:layout_constraintTop_toBottomOf="@id/pothole"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="50dp"
+        />
+
+    <ImageView
+        android:id="@+id/potholetext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/potholestext"
+        app:layout_constraintTop_toBottomOf="@id/pothole"
+        app:layout_constraintStart_toStartOf="@id/pothole"
+        android:layout_marginTop="8dp"
+        />
+
+    <ImageView
+        android:id="@+id/kmtext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/kmtext"
+        app:layout_constraintTop_toBottomOf="@id/km"
+        app:layout_constraintStart_toStartOf="@id/km"
+        android:layout_marginTop="8dp"
+        />
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
