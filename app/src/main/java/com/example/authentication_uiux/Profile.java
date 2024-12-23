@@ -1,7 +1,9 @@
 package com.example.authentication_uiux;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -45,6 +47,18 @@ public class Profile extends AppCompatActivity {
 
         //Set Click Listeners
         setClickListeners();
+
+        TextView emailTextView = findViewById(R.id.profile_email);
+        TextView emailTex = findViewById(R.id.email_text);
+
+        // Lấy SharedPreferences
+        SharedPreferences sharedPreferences = getSharedPreferences("auth_prefs", Context.MODE_PRIVATE);
+        String savedEmail = sharedPreferences.getString("email", "No email found");
+
+        // Hiển thị email trong TextView
+        emailTextView.setText(savedEmail);
+        emailTex.setText(savedEmail);
+
     }
 
     private void initializeViews(){
@@ -71,11 +85,9 @@ public class Profile extends AppCompatActivity {
         //Im gonna use this function with data from database after I finish all the UI
         //Now I just set the hardcoded for displaying the layout
         String username = "PTDat";
-        String email = "22520230@gm.uit.edu.vn";
+
 
         profileName.setText(username);
-        profileEmail.setText(email);
-        emailText.setText(email);
         usernameText.setText(username);
 
         //Set first letter of username to display on the profile image
