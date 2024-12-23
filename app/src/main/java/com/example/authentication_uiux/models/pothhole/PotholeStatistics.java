@@ -5,6 +5,7 @@ public class PotholeStatistics {
     private int resolvedPotholes;
     private int reportedPotholes;
     private int inProgressPotholes;
+    private double totalKilometers;
 
     public int getTotalPotholes() {
         return totalPotholes;
@@ -36,5 +37,13 @@ public class PotholeStatistics {
 
     public void setInProgressPotholes(int inProgressPotholes) {
         this.inProgressPotholes = inProgressPotholes;
+    }
+
+    public double getTotalKilometers() {
+        return totalKilometers;
+    }
+
+    public void setTotalKilometers(double totalKilometers) {
+        this.totalKilometers = totalKilometers;
     }
 }

@@ -17,13 +17,15 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class DashboardFragment extends Fragment {
-    private TextView totalPotholesTextView;
+    private TextView textPH;
+    private TextView textKM;
     private PotholeApi potholeApi;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.activity_dashboard, container, false);
-        totalPotholesTextView = root.findViewById(R.id.total_potholes_text_view);
+        textPH = root.findViewById(R.id.textPH);
+        textKM = root.findViewById(R.id.textKM);
 
         Retrofit retrofit = RetrofitClient.getClient();
         potholeApi = retrofit.create(PotholeApi.class);
@@ -38,15 +40,18 @@ public class DashboardFragment extends Fragment {
             @Override
             public void onResponse(@NonNull Call<PotholeStatistics> call, @NonNull Response<PotholeStatistics> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    totalPotholesTextView.setText("Total Potholes: " + response.body().getTotalPotholes());
+                    textPH.setText(String.valueOf(response.body().getTotalPotholes()));
+                    textKM.setText(String.valueOf(response.body().getTotalKilometers()));
                 } else {
-                    totalPotholesTextView.setText("Failed to fetch data");
+                    textPH.setText("Failed to fetch data");
+                    textKM.setText("Failed to fetch data");
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<PotholeStatistics> call, @NonNull Throwable t) {
-                totalPotholesTextView.setText("Error: " + t.getMessage());
+                textPH.setText("Error: " + t.getMessage());
+                textKM.setText("Error: " + t.getMessage());
             }
         });
     }

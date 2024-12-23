@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -6,34 +5,108 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MapActivity">
+    tools:context=".activitydashb">
 
- <RelativeLayout
-    android:id="@+id/home"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#FFFFFF"
-    android:clipToOutline="true"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintHorizontal_bias="0.686"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent">
+    <View
+        android:id="@+id/rectangle_2"
+        android:layout_width="match_parent"
+        android:layout_height="146.84dp"
+        android:background="#118844"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Other views -->
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/barChart"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rectangle_2"
+        android:layout_marginTop="0dp" />
+
+    <ImageView
+        android:id="@+id/image_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:src="@drawable/dashboardhouse"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="65dp"
+        tools:layout_editor_absoluteY="16dp" />
+
+    <ImageView
+        android:id="@+id/pothole"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="60dp"
+        android:src="@drawable/greennumb"
+        app:layout_constraintTop_toBottomOf="@id/barChart"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/km"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="60dp"
+        android:src="@drawable/greennumb"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.978"
+        app:layout_constraintStart_toEndOf="@+id/pothole"
+        app:layout_constraintTop_toBottomOf="@id/barChart" />
+
+    <TextView
+        android:id="@+id/textKM"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="40"
+        app:layout_constraintTop_toTopOf="@id/km"
+        app:layout_constraintEnd_toEndOf="@id/km"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="20dp"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:textSize="50sp" />
+
+    <TextView
+        android:id="@+id/textPH"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        app:layout_constraintTop_toTopOf="@id/pothole"
+        app:layout_constraintEnd_toEndOf="@id/pothole"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="35dp"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:textSize="50sp" />
 
     <TextView
         android:id="@+id/total_potholes_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:text="Total Potholes: 0"
+        android:layout_marginTop="56dp"
+        android:text="Total Potholes"
+        android:textColor="#000000"
         android:textSize="18sp"
-        android:textColor="#000000" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.179"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textPH" />
 
-    <!-- Other views -->
-
-</RelativeLayout>
+    <TextView
+        android:id="@+id/total_kilometers_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:text="Total Kilometers"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.592"
+        app:layout_constraintStart_toEndOf="@+id/total_potholes_text_view"
+        app:layout_constraintTop_toBottomOf="@id/textKM" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
