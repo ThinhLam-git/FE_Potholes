@@ -4,4 +4,10 @@
         <domain includeSubdomains="true">14.225.220.159</domain>
         <domain includeSubdomains="true">192.168.1.6</domain>
     </domain-config>
+
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
 </network-security-config>

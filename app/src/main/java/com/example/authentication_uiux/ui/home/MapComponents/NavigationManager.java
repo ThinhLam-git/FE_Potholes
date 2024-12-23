@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NavigationManager {
-    private static final String OSRM_API = "http://router.project-osrm.org/route/v1/driving/";
+    private static final String OSRM_API = "https://router.project-osrm.org/route/v1/driving/";
 
     public interface NavigationCallback {
         void onRouteFound(ArrayList<GeoPoint> route, String duration, String distance);

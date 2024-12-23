@@ -456,59 +456,83 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
     }
 
     private void showNavigationOption(GeoPoint destination) {
-//        GeoPoint currentLoc = locationOverlay.getMyLocation();
+        if (destination == null) {
+            showToast("Điểm đến không hợp lệ");
+            return;
+        }
+
+        // Get current location (using your fixed point for now)
         GeoPoint currentLoc = new GeoPoint(10.870894, 106.803054);
+        //GeoPoint currentLoc = locationOverlay.getMyLocation();
+
         if (currentLoc != null) {
-            // Remove old route if exists
-            if (routeOverlay != null) {
-                mapView.getOverlays().remove(routeOverlay);
+            try {
+                // Show loading indicator
+                showLoadingIndicator();
+
+                // Remove existing route if present
+                if (routeOverlay != null) {
+                    mapView.getOverlays().remove(routeOverlay);
+                }
+
+                // Calculate new route
+                navigationManager.getRoute(currentLoc, destination,
+                        new NavigationManager.NavigationCallback() {
+                            @Override
+                            public void onRouteFound(ArrayList<GeoPoint> route, String duration, String distance) {
+                                onRouteFound((List<GeoPoint>) (List<?>) route, duration, distance);
+                            }
+
+                            @Override
+                            public void onRouteFound(List<GeoPoint> route, String duration, String distance) {
+                                hideLoadingIndicator();
+
+                                if (route == null || route.isEmpty()) {
+                                    showToast("Không tìm thấy đường đi phù hợp");
+                                    return;
+                                }
+
+                                try {
+                                    // Save current route
+                                    currentRoute = route;
+
+                                    // Create and configure route overlay
+                                    routeOverlay = new Polyline();
+                                    routeOverlay.setPoints(route);
+                                    routeOverlay.setColor(ContextCompat.getColor(requireContext(), R.color.blue));
+                                    routeOverlay.setWidth(5f);
+                                    mapView.getOverlays().add(routeOverlay);
+
+                                    // Display navigation info
+                                    layoutNavigationInfo.setVisibility(View.VISIBLE);
+                                    routeInfoText.setText(String.format("%s • %s", distance, duration));
+
+                                    // Calculate bounding box for the route
+                                    BoundingBox boundingBox = getBoundingBoxForRoute(route);
+
+                                    // Zoom map to show entire route
+                                    mapView.zoomToBoundingBox(boundingBox, true);
+                                    mapView.invalidate();
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    showToast("Lỗi hiển thị đường đi: " + e.getMessage());
+                                }
+                            }
+
+                            @Override
+                            public void onError(String message) {
+                                hideLoadingIndicator();
+                                navigationInfoCard.setVisibility(View.GONE);
+                                showToast(message);
+                            }
+                        });
+            } catch (Exception e) {
+                hideLoadingIndicator();
+                showToast("Lỗi: " + e.getMessage());
             }
-
-            // Calculate new route
-            navigationManager.getRoute(currentLoc, destination,
-                    new NavigationManager.NavigationCallback() {
-                        @Override
-                        public void onRouteFound(ArrayList<GeoPoint> route, String duration, String distance) {
-
-                        }
-
-                        @Override
-                        public void onRouteFound(List<GeoPoint> route, String duration, String distance) {
-                            currentRoute = route;
-
-                            // Draw route
-                            routeOverlay = new Polyline();
-                            routeOverlay.setPoints(route);
-                            routeOverlay.setColor(ContextCompat.getColor(requireContext(), R.color.blue));
-                            routeOverlay.setWidth(5f);
-                            mapView.getOverlays().add(routeOverlay);
-
-                            // Show info in card
-                            navigationInfoCard.setVisibility(View.VISIBLE);
-                            routeInfoText.setText(String.format("%s • %s", distance, duration));
-
-                            // Kiểm tra ổ gà
-//                            List<PotholeData> potholeList = fetchPotholes(); // Lấy danh sách ổ gà
-//                            int potholeCount = countPotholesOnRoute(route, potholeList, 50.0); // Ngưỡng 50m
-//                            showPotholeAlert(potholeCount);
-
-                            // Tạo giới hạn của hộp vẽ để zoom vào
-                            BoundingBox boundingBox = getBoundingBoxForRoute(route);
-
-                            // Set camera to show the entire route
-                            mapView.zoomToBoundingBox(boundingBox, true);
-
-                            mapView.invalidate();
-                        }
-
-                        @Override
-                        public void onError(String message) {
-                            navigationInfoCard.setVisibility(View.GONE);
-                            showToast(message);
-                        }
-                    });
         } else {
-            showToast("Please enable location services to use navigation");
+            showToast("Vui lòng bật dịch vụ vị trí để sử dụng tính năng dẫn đường");
         }
     }
 
@@ -517,6 +541,8 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
             showToast("Please select both start and destination points");
             return;
         }
+
+        fetchPotholesFromApi();
 
         // Remove existing route if present
         if (routeOverlay != null) {
@@ -837,6 +863,8 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
                 Marker des = new Marker(mapView);
                 des.setPosition(endPoint);
                 des.setTitle(name);
+                Drawable icon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_red_location, null);
+                des.setIcon(icon);
                 mapView.getOverlays().add(des);
 
                 // Now we have both points, proceed with navigation
