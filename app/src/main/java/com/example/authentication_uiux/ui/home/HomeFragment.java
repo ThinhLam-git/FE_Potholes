@@ -1,18 +1,24 @@
 package com.example.authentication_uiux.ui.home;
 
 import android.Manifest;
-import android.app.Dialog;
+import android.app.Activity;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.location.Address;
 import android.location.Geocoder;
-import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.RingtoneManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -23,33 +29,37 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import org.osmdroid.views.overlay.Overlay;
 
+import com.example.authentication_uiux.Config;
 import com.example.authentication_uiux.R;
 import com.example.authentication_uiux.models.PotholeData;
 import com.example.authentication_uiux.API.PotholeApi;
 import com.example.authentication_uiux.ui.home.MapComponents.LocationSearchManager;
+import com.example.authentication_uiux.ui.home.MapComponents.NavigationFragment;
 import com.example.authentication_uiux.ui.home.MapComponents.NavigationManager;
+import com.example.authentication_uiux.ui.home.MapComponents.NavigationService;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.graphhopper.GHRequest;
-import com.graphhopper.GHResponse;
-import com.graphhopper.GraphHopper;
-import com.graphhopper.config.Profile;
-import com.graphhopper.routing.util.EncodingManager;
-import com.graphhopper.util.shapes.GHPoint3D;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
@@ -60,6 +70,7 @@ import org.osmdroid.tileprovider.modules.MapTileFileArchiveProvider;
 import org.osmdroid.tileprovider.tilesource.ITileSource;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.tileprovider.util.SimpleRegisterReceiver;
+import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.MapEventsOverlay;
@@ -72,9 +83,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -86,13 +99,12 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-
 public class HomeFragment extends Fragment implements SensorEventListener, MapEventsReceiver {
     private static final String TAG = "HomeFragment";
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
+    private static final int NOTIFICATION_PERMISSION_REQUEST_CODE = 1002;
     private static final float SHAKE_THRESHOLD = 30.0f;
     private static final long ALERT_DELAY_MS = 5000;
-    private static final String BASE_URL = "http://192.168.124.155:3000/";
 
     private MapView mapView;
     private IMapController mapController;
@@ -106,11 +118,11 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
     private ImageButton searchButton;
     private ImageButton zoomInButton, zoomOutButton;
     private FloatingActionButton trackLocationButton;
+    private FloatingActionButton navigationButton, addPotholeButton;
     private Geocoder geocoder;
     private PotholeApi potholeApi;
     private Marker currentLocationMarker;
     private boolean isLocationTracking = false;
-    private GraphHopper hopper;
 
     private LocationSearchManager searchManager;
     private NavigationManager navigationManager;
@@ -119,45 +131,49 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
     private Polyline routeOverlay;
     private GeoPoint selectedLocation;
 
-    private Dialog navigationDialog;
-    private EditText editTextStart, editTextDestination;
-    private TextView textDistance, textDuration;
-    private LinearLayout layoutNavigationInfo;
-    private GeoPoint startPoint, endPoint;
+    private String username;
+
+    private CardView navigationInfoCard;
+    private TextView routeInfoText;
+    private TextView routeDetailText;
+    private Button startNavigationButton;
+
+    private List<GeoPoint> currentRoute;
+    private BroadcastReceiver navigationReceiver;
+
+    private NavigationFragment navigationFragment;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Initialize OSMDroid configuration
         Configuration.getInstance().load(requireContext(), requireActivity().getPreferences(Context.MODE_PRIVATE));
-
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
+        // Initialize username
+        username = getUsernameFromAuth();
+
         initializeViews(root);
-
         initializeSensors();
-
         initializeMap();
-
         setupRetrofit();
-
-        initializeGraphHopper("vietnam_latest.osm.pbf");
 
         searchManager = new LocationSearchManager();
         navigationManager = new NavigationManager();
 
-        initializeNavigationDialog();
+        setupNavigationReceiver();
+        setupStartNavigationButton();
 
-        FloatingActionButton navigationButton = root.findViewById(R.id.button_navigation);
-        navigationButton.setOnClickListener(v -> {
-            startPoint = null;
-            endPoint = null;
-            layoutNavigationInfo.setVisibility(View.GONE);
-            editTextStart.setText("");
-            editTextDestination.setText("");
-            navigationDialog.show();
-        });
+        fetchPotholesFromApi();
+//        initializeNavigationDialog();
 
-
+//        navigationButton.setOnClickListener(v -> {
+//            startPoint = null;
+//            endPoint = null;
+//            layoutNavigationInfo.setVisibility(View.GONE);
+//            editTextStart.setText("");
+//            editTextDestination.setText("");
+//            navigationDialog.show();
+//        });
         return root;
     }
 
@@ -169,12 +185,19 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
         zoomInButton = root.findViewById(R.id.button_zoom_in);
         zoomOutButton = root.findViewById(R.id.button_zoom_out);
         trackLocationButton = root.findViewById(R.id.button_track_location);
+        navigationButton = root.findViewById(R.id.button_navigation);
 
         geocoder = new Geocoder(requireContext(), Locale.getDefault());
         popupHandler = new Handler(Looper.getMainLooper());
 
         setupSearch();
         setupButtons();
+
+        navigationInfoCard = root.findViewById(R.id.navigation_info_card);
+        routeInfoText = root.findViewById(R.id.route_info_text);
+        routeDetailText = root.findViewById(R.id.route_detail_text);
+        startNavigationButton = root.findViewById(R.id.start_navigation_button);
+        addPotholeButton = root.findViewById(R.id.button_add_pothole);
     }
 
     private String copyMbTilesToInternalStorage() {
@@ -238,122 +261,207 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
         mapView.getOverlays().add(mapEventsOverlay);
     }
 
-    // Initialize the navigation dialog
-    private void initializeNavigationDialog() {
-        navigationDialog = new Dialog(requireContext());
-        navigationDialog.setContentView(R.layout.dialog_navigation);
-        navigationDialog.getWindow().setLayout(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-
-        // Initialize views
-        editTextStart = navigationDialog.findViewById(R.id.edit_text_start);
-        editTextDestination = navigationDialog.findViewById(R.id.edit_text_destination);
-        textDistance = navigationDialog.findViewById(R.id.text_distance);
-        textDuration = navigationDialog.findViewById(R.id.text_duration);
-        layoutNavigationInfo = navigationDialog.findViewById(R.id.layout_navigation_info);
-        Button buttonNavigate = navigationDialog.findViewById(R.id.button_navigate);
-        Button buttonCancel = navigationDialog.findViewById(R.id.button_cancel);
-
-        // Setup search functionality for start location
-        editTextStart.setOnEditorActionListener((v, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_NEXT) {
-                searchLocation(editTextStart.getText().toString(), true);
+    //   ----------------------------SEARCH ENGINE----------------------
+    private void setupSearch() {
+        searchButton.setOnClickListener(v -> {
+            performSearch();
+            hideKeyboard(this.requireActivity());
+            searchEditText.setText("");
+        });
+        searchEditText.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                performSearch();
                 return true;
             }
             return false;
         });
+    }
 
-        // Setup search functionality for destination
-        editTextDestination.setOnEditorActionListener((v, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                searchLocation(editTextDestination.getText().toString(), false);
-                return true;
-            }
-            return false;
+    private static void hideKeyboard(Activity activity) {
+        // Lấy đối tượng InputMethodManager
+        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        // Kiểm tra xem bàn phím có đang mở hay không
+        if (inputMethodManager != null && activity.getCurrentFocus() != null) {
+            // Ẩn bàn phím
+            inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+        }
+    }
+
+    private void performSearch() {
+        String query = searchEditText.getText().toString().trim();
+        if (!query.isEmpty()) {
+            searchManager.searchLocation(query, new LocationSearchManager.SearchCallBack() {
+                @Override
+                public void onLocationFound(double lat, double lon, String name) {
+                    selectedLocation = new GeoPoint(lat, lon);
+
+                    // Cập nhật camera để zoom vào vị trí tìm được
+                    mapController.animateTo(selectedLocation);
+                    mapController.setZoom(20.0);
+
+                    // Add marker
+                    Marker marker = new Marker(mapView);
+                    marker.setPosition(selectedLocation);
+                    marker.setTitle(name);
+                    mapView.getOverlays().add(marker);
+
+                    marker.setOnMarkerClickListener((marker1, mapview1) -> {
+                        String info = "Tên: " + marker1.getTitle() + "\nVị trí: " + selectedLocation.getLatitude() + ", " + selectedLocation.getLongitude();
+                        showLocationDialog(info, selectedLocation);
+                        return true;
+                    });
+
+                    mapView.getOverlays().add(marker);
+
+                    // Hiển thị nút "Dẫn đường"
+                    showNavigationOption(selectedLocation);
+                }
+                @Override
+                public void onError(String message) {
+                    showToast(message);
+                }
+            });
+        } else {
+            showToast("Please enter a search query");
+        }
+    }
+
+    // ------------------------------ROUTE------------------------------------
+
+    private void showLocationDialog(String info, GeoPoint selectedLocation) {
+        // Create a dialog builder
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+
+        // Set dialog title
+        builder.setTitle("Thông tin địa điểm");
+
+        // Set dialog message
+        builder.setMessage(info);
+
+        // Add a button to start navigation
+        builder.setPositiveButton("Dẫn đường", (dialog, which) -> {
+            // Trigger the navigation function when the button is clicked
+            dialog.dismiss();
         });
 
-        // Setup navigation button
-        buttonNavigate.setOnClickListener(v -> {
-            if (startPoint != null && endPoint != null) {
-                calculateAndShowRoute();
-            } else {
-                showToast("Please select both locations");
-            }
-        });
-
-        // Setup cancel button
-        buttonCancel.setOnClickListener(v -> {
-            navigationDialog.dismiss();
+        // Add a cancel button to dismiss the dialog
+        builder.setNegativeButton("Hủy", (dialog, which) -> {
+            dialog.dismiss();
             clearNavigationRoute();
+            mapController.setZoom(15.0);
+            GeoPoint startPoint = new GeoPoint(10.870894, 106.803054);
+            mapController.setCenter(startPoint);
+            mapView.getOverlays().clear();
+            mapView.invalidate();
         });
+
+        // Create and show the dialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void showNavigationOption(GeoPoint destination) {
+//        GeoPoint currentLoc = locationOverlay.getMyLocation();
+        GeoPoint currentLoc = new GeoPoint(10.870894, 106.803054);
+        if (currentLoc != null) {
+            // Remove old route if exists
+            if (routeOverlay != null) {
+                mapView.getOverlays().remove(routeOverlay);
+            }
+
+            // Calculate new route
+            navigationManager.getRoute(currentLoc, destination,
+                    new NavigationManager.NavigationCallback() {
+                        @Override
+                        public void onRouteFound(ArrayList<GeoPoint> route, String duration, String distance) {
+
+                        }
+
+                        @Override
+                        public void onRouteFound(List<GeoPoint> route, String duration, String distance) {
+                            currentRoute = route;
+
+                            // Draw route
+                            routeOverlay = new Polyline();
+                            routeOverlay.setPoints(route);
+                            routeOverlay.setColor(ContextCompat.getColor(requireContext(), R.color.blue));
+                            routeOverlay.setWidth(5f);
+                            mapView.getOverlays().add(routeOverlay);
+
+                            // Show info in card
+                            navigationInfoCard.setVisibility(View.VISIBLE);
+                            routeInfoText.setText(String.format("%s • %s", distance, duration));
+
+                            // Kiểm tra ổ gà
+                            List<PotholeData> potholeList = fetchPotholes(); // Lấy danh sách ổ gà
+                            int potholeCount = countPotholesOnRoute(route, potholeList, 50.0); // Ngưỡng 50m
+                            showPotholeAlert(potholeCount);
+
+                            // Tạo giới hạn của hộp vẽ để zoom vào
+                            BoundingBox boundingBox = getBoundingBoxForRoute(route);
+
+                            // Set camera to show the entire route
+                            mapView.zoomToBoundingBox(boundingBox, true);
+
+                            mapView.invalidate();
+                        }
+
+                        @Override
+                        public void onError(String message) {
+                            navigationInfoCard.setVisibility(View.GONE);
+                            showToast(message);
+                        }
+                    });
+        } else {
+            showToast("Please enable location services to use navigation");
+        }
+    }
+
+    private List<PotholeData> fetchPotholes() {
+        List<PotholeData> potholeList = new ArrayList<>();
+
+        // Gọi API đồng bộ để lấy danh sách ổ gà
+        try {
+            // Tạo một lệnh Retrofit đồng bộ
+            Response<List<PotholeData>> response = potholeApi.getPotholes().execute();
+
+            if (response.isSuccessful() && response.body() != null) {
+                potholeList = response.body(); // Lưu kết quả vào danh sách
+                Log.d(TAG, "Fetched " + potholeList.size() + " potholes from API");
+            } else {
+                Log.e(TAG, "Failed to fetch potholes. Response code: " + response.code());
+                if (response.errorBody() != null) {
+                    Log.e(TAG, "Error body: " + response.errorBody().string());
+                }
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "Error fetching potholes", e);
+        }
+
+        return potholeList;
     }
 
 
-    // Add this method to handle location search for navigation
-    private void searchLocation(String query, boolean isStart) {
-        searchManager.searchLocation(query, new LocationSearchManager.SearchCallBack() {
-            @Override
-            public void onLocationFound(double lat, double lon, String name) {
-                GeoPoint point = new GeoPoint(lat, lon);
-                if (isStart) {
-                    startPoint = point;
-                    editTextStart.setText(name);
-                } else {
-                    endPoint = point;
-                    editTextDestination.setText(name);
-                }
+    // Hàm tinh toan hop gioi han cua duong di
+    private BoundingBox getBoundingBoxForRoute(List<GeoPoint> route) {
+        double minLat = Double.MAX_VALUE;
+        double minLon = Double.MAX_VALUE;
+        double maxLat = Double.MIN_VALUE;
+        double maxLon = Double.MIN_VALUE;
 
-                // If both points are set, calculate the route
-                if (startPoint != null && endPoint != null) {
-                    calculateAndShowRoute();
-                }
-            }
+        // Iterate through the route points to find the min and max latitudes and longitudes
+        for (GeoPoint point : route) {
+            double lat = point.getLatitude();
+            double lon = point.getLongitude();
 
-            @Override
-            public void onError(String message) {
-                showToast(message);
-            }
-        });
-    }
+            if (lat < minLat) minLat = lat;
+            if (lat > maxLat) maxLat = lat;
+            if (lon < minLon) minLon = lon;
+            if (lon > maxLon) maxLon = lon;
+        }
 
-    // Add this method to calculate and show the route
-    private void calculateAndShowRoute() {
-        if (startPoint == null || endPoint == null) return;
-
-        // Clear previous route
-        clearNavigationRoute();
-
-        navigationManager.getRoute(startPoint, endPoint, new NavigationManager.NavigationCallback() {
-            @Override
-            public void onRouteFound(ArrayList<GeoPoint> route, String duration, String distance) {
-
-            }
-
-            @Override
-            public void onRouteFound(List<GeoPoint> route, String duration, String distance) {
-                // Draw route
-                routeOverlay = new Polyline();
-                routeOverlay.setPoints(route);
-                routeOverlay.setColor(ContextCompat.getColor(requireContext(), R.color.blue));
-                routeOverlay.setWidth(5f);
-                mapView.getOverlays().add(routeOverlay);
-
-                // Show navigation info
-                layoutNavigationInfo.setVisibility(View.VISIBLE);
-                textDistance.setText("Distance: " + distance);
-                textDuration.setText("Duration: " + duration);
-
-                // Update map view to show the entire route
-                mapView.zoomToBoundingBox(routeOverlay.getBounds(), true, 100);
-                mapView.invalidate();
-            }
-
-            @Override
-            public void onError(String message) {
-                showToast(message);
-            }
-        });
+        return new BoundingBox(maxLat, maxLon, minLat, minLon);
     }
 
     // Add this method to clear the navigation route
@@ -376,6 +484,57 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
                 stopLocationTracking();
             }
         });
+
+        addPotholeButton.setOnClickListener(v -> {
+            GeoPoint currentLoc = locationOverlay.getMyLocation(); // Lấy vị trí hiện tại
+            if (currentLoc == null) {
+                showToast("Unable to determine your location. Please try again.");
+                return;
+            }else {
+                PotholeData data = new PotholeData(
+                        currentLoc.getLatitude(),
+                        currentLoc.getLongitude(),
+                        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date()),
+                        username,
+                        "reported"
+                );
+                showReportPotholeDialog(currentLoc, data); // Hiển thị dialog xác nhận
+            }
+        });
+    }
+
+    private void showReportPotholeDialog(GeoPoint currentLoc, PotholeData data) {
+        if (currentLoc == null) {
+            showToast("Unable to determine your location. Please try again.");
+            return;
+        }
+
+        // Tạo dialog xác nhận lần đầu
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Report Pothole")
+                .setMessage("Do you want to report your current location as a pothole?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    // Nếu người dùng chọn "Có", hiển thị dialog xác nhận lần hai
+                    new AlertDialog.Builder(requireContext())
+                            .setTitle("Confirm Report")
+                            .setMessage("Once reported, this action cannot be undone. Are you sure?")
+                            .setPositiveButton("Yes", (confirmDialog, confirmWhich) -> {
+                                // Lưu dữ liệu ổ gà và thêm marker
+                                savePotholeDataToMongoDB(currentLoc);
+                                addPotholeMarker(currentLoc, data);
+                                showToast("Pothole reported successfully!");
+                            })
+                            .setNegativeButton("No", (confirmDialog, confirmWhich) -> {
+                                showToast("Pothole report canceled.");
+                                confirmDialog.dismiss();
+                            })
+                            .show();
+                })
+                .setNegativeButton("No", (dialog, which) -> {
+                    showToast("Pothole report canceled.");
+                    dialog.dismiss();
+                })
+                .show();
     }
 
     private void checkAndRequestLocationPermission() {
@@ -426,106 +585,80 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
         trackLocationButton.setImageResource(android.R.drawable.ic_menu_mylocation);
     }
 
-    private void setupSearch() {
-        searchButton.setOnClickListener(v -> performSearch());
-        searchEditText.setOnEditorActionListener((v, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                performSearch();
-                return true;
+
+//    ---------------------------------NAVIGATION--------------------------------
+
+    private void setupNavigationReceiver() {
+        navigationReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction().equals("navigation.next_instruction")) {
+                    String instruction = intent.getStringExtra("instruction");
+                    routeDetailText.setText(instruction);
+                }
             }
-            return false;
+        };
+
+        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
+                navigationReceiver,
+                new IntentFilter("navigation.next_instruction")
+        );
+    }
+
+    private void setupStartNavigationButton() {
+        startNavigationButton.setOnClickListener(v -> {
+            if (currentRoute != null) {
+                startNavigation();
+            } else showToast("There's no any route!");
         });
     }
 
-    private void performSearch() {
-        String query = searchEditText.getText().toString().trim();
-        if (!query.isEmpty()) {
-            searchManager.searchLocation(query, new LocationSearchManager.SearchCallBack() {
-                @Override
-                public void onLocationFound(double lat, double lon, String name) {
-                    selectedLocation = new GeoPoint(lat, lon);
-
-                    // Animate map to found location
-                    mapController.animateTo(selectedLocation);
-                    mapController.setZoom(16.0);
-
-                    // Add marker
-                    Marker marker = new Marker(mapView);
-                    marker.setPosition(selectedLocation);
-                    marker.setTitle(name);
-                    mapView.getOverlays().add(marker);
-
-                    // Show navigation option
-                    showNavigationOption(selectedLocation);
-                }
-
-                @Override
-                public void onError(String message) {
-                    showToast(message);
-                }
-            });
-        } else {
-            showToast("Please enter a search query");
-        }
-    }
-
-    private void showNavigationOption(GeoPoint destination) {
-        GeoPoint currentLoc = locationOverlay.getMyLocation();
-        if (currentLoc != null) {
-            // Remove old route if exists
-            if (routeOverlay != null) {
-                mapView.getOverlays().remove(routeOverlay);
-            }
-
-            // Calculate new route
-            navigationManager.getRoute(currentLoc, destination,
-                    new NavigationManager.NavigationCallback() {
-                        @Override
-                        public void onRouteFound(ArrayList<GeoPoint> route, String duration, String distance) {
-
-                        }
-
-                        @Override
-                        public void onRouteFound(List<GeoPoint> route, String duration, String distance) {
-                            // Draw route
-                            routeOverlay = new Polyline();
-                            routeOverlay.setPoints(route);
-                            routeOverlay.setColor(ContextCompat.getColor(requireContext(), R.color.blue));
-                            routeOverlay.setWidth(5f);
-                            mapView.getOverlays().add(routeOverlay);
-
-                            // Show info
-                            showToast("Distance: " + distance + "\nDuration: " + duration);
-                            mapView.invalidate();
-                        }
-
-                        @Override
-                        public void onError(String message) {
-                            showToast(message);
-                        }
-                    });
-        } else {
-            showToast("Please enable location services to use navigation");
-        }
-    }
-
-    private void getCurrentLocation() {
-        if (ContextCompat.checkSelfPermission(requireContext(),
+    private void startNavigation() {
+        // Check location permission
+        if (ActivityCompat.checkSelfPermission(requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(requireActivity(),
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+            showToast("Please enable location permission");
             return;
         }
 
-        locationManager = (LocationManager) requireContext().getSystemService(Context.LOCATION_SERVICE);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0,
-                new LocationListener() {
-                    @Override
-                    public void onLocationChanged(@NonNull Location location) {
-                        currentLocation = location;
-                        locationManager.removeUpdates(this);
-                        showPotholePopup(new GeoPoint(location.getLatitude(), location.getLongitude()));
-                    }
-                });
+        // Start navigation service
+        Intent intent = new Intent(requireContext(), NavigationService.class);
+        intent.putParcelableArrayListExtra("route", new ArrayList<>(currentRoute));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            requireContext().startForegroundService(intent);
+        } else {
+            requireContext().startService(intent);
+        }
+
+        // Update UI
+        startNavigationButton.setText("Dừng");
+        startNavigationButton.setOnClickListener(v -> stopNavigation());
     }
+
+    private void stopNavigation() {
+        // Stop navigation service
+        requireContext().stopService(new Intent(requireContext(), NavigationService.class));
+
+        // Reset UI
+        startNavigationButton.setText("Bắt đầu");
+        startNavigationButton.setOnClickListener(v -> startNavigation());
+        routeDetailText.setText("");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (navigationReceiver != null) {
+            LocalBroadcastManager.getInstance(requireContext())
+                    .unregisterReceiver(navigationReceiver);
+        }
+        stopNavigation();
+    }
+
+//    -----------------------------------POTHOLE--------------------------------
 
     private void showPotholePopup(GeoPoint location) {
         // Ensure we're on the main thread
@@ -549,8 +682,16 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
 
             locationOverlay.disableMyLocation();
 
+            //Tạo mới dữ liệu ổ gà
+            PotholeData data = new PotholeData(
+                    location.getLatitude(),
+                    location.getLongitude(),
+                    getCurrentTime(),
+                    username,
+                    "reported"
+            );
             // Add a marker at the current location
-            addPotholeMarker(location);
+            addPotholeMarker(location, data);
 
             // Save pothole data to MongoDB
             savePotholeDataToMongoDB(location);
@@ -585,46 +726,59 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
         popupHandler.removeCallbacksAndMessages(null);
     }
 
+    private String getUsernameFromAuth() {
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("auth_prefs", Context.MODE_PRIVATE);
+        return sharedPreferences.getString("username", "default_username"); // Replace "default_username" with a suitable default value
+    }
+
     private void savePotholeDataToMongoDB(GeoPoint location) {
         if(location == null){
             showToast("Invalid Location Data");
             return;
         }
 
-        // Định dạng thời gian
+        // Format the current time
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
-        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));  // Đảm bảo lưu thời gian UTC
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));  // Ensure UTC time
         String currentTime = sdf.format(new Date());
 
-        // Tạo đối tượng Ổ GÀ
+        // Create PotholeData object
         PotholeData potholeData = new PotholeData(
                 location.getLatitude(),
                 location.getLongitude(),
                 currentTime,
-                "ThinhTesting",
+                username,
                 "reported"
         );
 
-        // Gửi yêu cầu Lưu dữ liệu lên mongoDB thông qua API
+        // Use Retrofit to upload the pothole data
         potholeApi.addPothole(potholeData).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 if (response.isSuccessful()) {
-                    addPotholeMarker(location); // Thêm marker ổ gà vào bản đồ
+                    addPotholeMarker(location, potholeData); // Add pothole marker to the map
                     showToast("Pothole saved successfully");
                 } else {
-                    showToast("Error saving pothole");
+                    try {
+                        String errorBody = response.errorBody().string();
+                        Log.e(TAG, "Error saving pothole: " + errorBody);
+                        showToast("Error saving pothole: " + errorBody);
+                    } catch (IOException e) {
+                        Log.e(TAG, "Error reading error body", e);
+                        showToast("Error saving pothole");
+                    }
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
-                showToast("Network error");
+                Log.e(TAG, "Network error", t);
+                showToast("Network error: " + t.getMessage());
             }
         });
     }
 
-    private void addPotholeMarker(GeoPoint location) {
+    private void addPotholeMarker(GeoPoint location, PotholeData data) {
         Marker potholeMarker = new Marker(mapView);
         potholeMarker.setPosition(location);
 
@@ -636,9 +790,10 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
         Drawable icon = ResourcesCompat.getDrawable(getResources(), R.drawable.pothole_icon, null);
         potholeMarker.setIcon(icon);
 
+
         //Hiển thị bong bóng thông tin
         potholeMarker.setOnMarkerClickListener((marker, mapView) -> {
-            marker.showInfoWindow();
+            showPotholeDialog(data);
             return true; //Ngăn việc map di chuyển khi click vào marker
         });
 
@@ -646,66 +801,177 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
         mapView.invalidate(); //Redraw the map
     }
 
+    private void showPotholeDialog(PotholeData potholeData) {
+        // Tạo Dialog Builder
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Pothole Details");
+
+        // Inflate layout tùy chỉnh cho Dialog
+        LayoutInflater inflater = LayoutInflater.from(requireContext());
+        View dialogView = inflater.inflate(R.layout.dialog_pothole_details, null);
+        builder.setView(dialogView);
+
+        // Gán các giá trị từ PotholeData vào View
+        TextView latitudeTextView = dialogView.findViewById(R.id.latitude_text_view);
+        TextView longitudeTextView = dialogView.findViewById(R.id.longitude_text_view);
+        TextView userTextView = dialogView.findViewById(R.id.user_text_view);
+        TextView detectionTimeTextView = dialogView.findViewById(R.id.detection_time_text_view);
+        Spinner statusSpinner = dialogView.findViewById(R.id.status_spinner);
+
+        latitudeTextView.setText("Latitude: " + potholeData.getLatitude());
+        longitudeTextView.setText("Longitude: " + potholeData.getLongitude());
+        userTextView.setText("Reported by: " + potholeData.getUser());
+        detectionTimeTextView.setText("Detected at: " + potholeData.getDetectionTime());
+
+        // Cấu hình Spinner trạng thái
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                requireContext(),
+                android.R.layout.simple_spinner_item,
+                new String[]{"reported", "in progress", "solved"}
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        statusSpinner.setAdapter(adapter);
+
+        // Đặt trạng thái hiện tại
+        statusSpinner.setSelection(adapter.getPosition(potholeData.getStatus()));
+
+        // Nút "Cập nhật"
+        builder.setPositiveButton("Update", (dialog, which) -> {
+            String newStatus = statusSpinner.getSelectedItem().toString();
+            updatePotholeStatusInMongoDB(potholeData, newStatus);
+        });
+
+        // Nút "Hủy"
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+
+        // Hiển thị Dialog
+        builder.show();
+    }
+
+    private void updatePotholeStatusInMongoDB(PotholeData potholeData, String newStatus) {
+        potholeData.setStatus(newStatus);
+
+        // Gửi dữ liệu cập nhật tới server qua Retrofit
+        potholeApi.updatePotholeStatus(potholeData).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
+                if (response.isSuccessful()) {
+                    showToast("Pothole status updated successfully!");
+                } else {
+                    showToast("Failed to update pothole status: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                showToast("Network error: " + t.getMessage());
+            }
+        });
+    }
+
+
     // Hàm lấy thời gian hiện tại
     private String getCurrentTime() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
         return sdf.format(new Date());
     }
 
-    //Khởi tạo GraphHopper
-    private void initializeGraphHopper(String filePath) {
-        new Thread(() -> {
-            try {
-                hopper = new GraphHopper()
-                        .setOSMFile(filePath)
-                        .setGraphHopperLocation(requireContext().getFilesDir().getAbsolutePath())
-                        .setProfiles(new Profile("motorcycle").setVehicle("motorcycle").setWeighting("fastest"))
-                        .importOrLoad();
-            } catch (Exception e) {
-                Log.e("GraphHopper", "Error initializing GraphHopper", e);
+    private void fetchPotholesFromApi() {
+        potholeApi.getPotholes().enqueue(new Callback<List<PotholeData>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<PotholeData>> call, @NonNull Response<List<PotholeData>> response) {
+
+                if (response.isSuccessful() && response.body() != null) {
+                    showToast("Successfully fetched potholes: " + response.body().size());
+
+                    for (PotholeData pothole : response.body()) {
+                        Log.d(TAG, "onResponse: Pothole location - Latitude: " + pothole.getLatitude() + ", Longitude: " + pothole.getLongitude());
+                        GeoPoint location = new GeoPoint(pothole.getLatitude(), pothole.getLongitude());
+                        addPotholeMarker(location, pothole);
+                    }
+                } else {
+                    Log.e(TAG, "onResponse: Failed to fetch potholes. Response code: " + response.code());
+                    if (response.errorBody() != null) {
+                        try {
+                            String errorDetails = response.errorBody().string();
+                            Log.e(TAG, "onResponse: Error details - " + errorDetails);
+                            showToast("Failed to fetch potholes: " + errorDetails);
+                        } catch (IOException e) {
+                            Log.e(TAG, "onResponse: Failed to read error body", e);
+                        }
+                    } else {
+                        showToast("Failed to fetch potholes: Empty response body");
+                    }
+                }
             }
-        }).start();
+
+            @Override
+            public void onFailure(@NonNull Call<List<PotholeData>> call, @NonNull Throwable t) {
+                Log.e(TAG, "onFailure: Error occurred while fetching potholes", t);
+                showToast("Network error: Unable to fetch potholes. " + t.getMessage());
+            }
+        });
     }
 
-    //Tính toán đường đi
-    private void calculateRoute(GeoPoint start, GeoPoint end) {
-        if (hopper == null) {
-            showToast("GraphHopper hasn't initialized yet!");
-            return;
+    private void displayPotholes(List<PotholeData> potholes) {
+        // Xóa các marker ổ gà cũ (nếu có)
+        clearPotholeMarkers();
+
+        for (PotholeData pothole : potholes) {
+            GeoPoint location = new GeoPoint(pothole.getLatitude(), pothole.getLongitude());
+
+            Marker potholeMarker = new Marker(mapView);
+            potholeMarker.setPosition(location);
+            potholeMarker.setTitle("Pothole");
+            potholeMarker.setSnippet(
+                    "Reported by: " + pothole.getUser() + "\n" +
+                            "Status: " + pothole.getStatus() + "\n" +
+                            "Time: " + formatTimestamp(pothole.getDetectionTime())
+            );
+
+            // Set icon cho marker
+            Drawable icon = ResourcesCompat.getDrawable(getResources(), R.drawable.pothole_icon, null);
+            potholeMarker.setIcon(icon);
+
+            // Hiển thị thông tin khi click
+            potholeMarker.setOnMarkerClickListener((marker, mapView) -> {
+                marker.showInfoWindow();
+                return true;
+            });
+
+            mapView.getOverlays().add(potholeMarker);
         }
 
-        new Thread(() -> {
-            GHRequest req = new GHRequest(
-                    start.getLatitude(), start.getLongitude(),
-                    end.getLatitude(), end.getLongitude()
-            ).setProfile("motorcycle").setLocale("en");
-
-            GHResponse resp = hopper.route(req);
-
-            if (resp.hasErrors()) {
-                Log.e(TAG, "Route errors: " + resp.getErrors());
-                showToast("Can't calculate route");
-                return;
-            }
-
-            List<GeoPoint> routePoints = new ArrayList<>();
-            for (GHPoint3D point : resp.getBest().getPoints()) {
-                routePoints.add(new GeoPoint(point.getLat(), point.getLon()));
-            }
-
-            requireActivity().runOnUiThread(() -> drawRouteOnMap(routePoints));
-        }).start();
+        mapView.invalidate(); // Cập nhật map
     }
 
-    //Vẽ đường đi trên bản đồ
-    private void drawRouteOnMap(List<GeoPoint> routePoints) {
-        Polyline routeOverlay = new Polyline();
-        routeOverlay.setPoints(routePoints);
-        routeOverlay.setColor(ContextCompat.getColor(requireContext(), R.color.red));
-        routeOverlay.setWidth(10.0f);
+    private void clearPotholeMarkers() {
+        // Xóa tất cả marker khỏi map
+        List<Overlay> overlays = mapView.getOverlays();
+        Iterator<Overlay> iterator = overlays.iterator();
+        while (iterator.hasNext()) {
+            Overlay overlay = iterator.next();
+            if (overlay instanceof Marker) {
+                Marker marker = (Marker) overlay;
+                if (marker.getTitle() != null && marker.getTitle().equals("Pothole")) {
+                    iterator.remove();
+                }
+            }
+        }
+    }
 
-        mapView.getOverlays().add(routeOverlay);
-        mapView.invalidate();
+    private String formatTimestamp(String timestamp) {
+        try {
+            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
+            inputFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+            SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.US);
+            outputFormat.setTimeZone(TimeZone.getDefault());
+
+            Date date = inputFormat.parse(timestamp);
+            return outputFormat.format(date);
+        } catch (ParseException e) {
+            return timestamp;
+        }
     }
 
     // Sensor and lifecycle methods
@@ -732,6 +998,118 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
         }
     }
 
+    // ----------------------------POTHOLES ON ROUTE------------------------------------
+
+    private boolean isPotholeNearSegment(PotholeData pothole, GeoPoint start, GeoPoint end, double threshold) {
+        double distance = distanceToSegment(pothole, start, end);
+        return distance <= threshold    ;
+    }
+
+    private double distanceToSegment(PotholeData point, GeoPoint start, GeoPoint end) {
+        double A = point.getLatitude();
+        double B = point.getLongitude();
+        double C = end.getLatitude() - start.getLatitude();
+        double D = end.getLongitude() - start.getLongitude();
+
+        double dot = A * C + B * D;
+        double len_sq = C * C + D * D;
+        double param = -1;
+        if (len_sq != 0) {
+            param = dot / len_sq;
+        }
+
+        double xx, yy;
+        if (param < 0) {
+            xx = start.getLatitude();
+            yy = start.getLongitude();
+        } else if (param > 1) {
+            xx = end.getLatitude();
+            yy = end.getLongitude();
+        } else {
+            xx = start.getLatitude() + param * C;
+            yy = start.getLongitude() + param * D;
+        }
+
+        double dx = point.getLatitude() - xx;
+        double dy = point.getLongitude() - yy;
+
+        return Math.sqrt(dx * dx + dy * dy) * 111320; // Chuyển đổi độ sang mét (1 độ ≈ 111.32 km)
+    }
+
+
+    private int countPotholesOnRoute(List<GeoPoint> latLongList, List<PotholeData> potholeList, double threshold) {
+        int count = 0;
+        for (PotholeData pothole : potholeList) {
+            for (int i = 0; i < latLongList.size() - 1; i++) {
+                GeoPoint start = latLongList.get(i);
+                GeoPoint end = latLongList.get(i + 1);
+
+                if (isPotholeNearSegment(pothole, start, end, threshold)) {
+                    count++;
+                    break;
+                }
+            }
+        }
+        return count;
+    }
+
+    private void showPotholeAlert(int count) {
+        if (count > 0) {
+            String message = "Warning: " + count + " potholes detected near your route!";
+
+            // Hiển thị thông báo trong ứng dụng
+            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+            builder.setTitle("Pothole Alert")
+                    .setMessage(message)
+                    .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                    .show();
+
+            // Gửi Notification
+            showPotholeNotification(count);
+        }
+    }
+
+    private void showPotholeNotification(int count) {
+        if (count > 0) {
+            String message = "Warning: " + count + " potholes detected near your route!";
+
+            // Tạo Notification Channel (chỉ cần tạo một lần cho API >= 26)
+            String channelId = "pothole_alert_channel";
+            String channelName = "Pothole Alerts";
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
+                NotificationManager notificationManager = requireContext().getSystemService(NotificationManager.class);
+                if (notificationManager != null) {
+                    notificationManager.createNotificationChannel(channel);
+                }
+            }
+
+            // Tạo Notification
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(requireContext(), channelId)
+                    .setSmallIcon(R.drawable.ic_pothole_warning)
+                    .setContentTitle("Pothole Alert")
+                    .setContentText(message)
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setAutoCancel(true)
+                    .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)); // Âm thanh thông báo
+
+            // Hiển thị Notification
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(requireContext());
+            if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                // Yêu cầu quyền nếu chưa được cấp
+                requestPermissions(
+                        new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                        NOTIFICATION_PERMISSION_REQUEST_CODE
+                );
+                return;
+            }
+            notificationManager.notify(1, builder.build()); // ID = 1 để nhận diện thông báo
+        }
+    }
+
+
+
+    //    -----------------------------------------------------------------------------------
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
         // Not needed
@@ -747,19 +1125,8 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
     public boolean longPressHelper(GeoPoint p) {
         showPotholePopup(p);
 
-        if (currentLocationMarker == null) {
-            currentLocationMarker = new Marker(mapView);
-            currentLocationMarker.setPosition(p);
-            currentLocationMarker.setTitle("Start Point");
-            mapView.getOverlays().add(currentLocationMarker);
-        } else {
-            calculateRoute(currentLocationMarker.getPosition(), p);
-        }
-
         return true;
     }
-
-
 
     private float calculateShakeForce(float[] values) {
         float x = values[0];
@@ -774,7 +1141,7 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
 
     private void setupRetrofit() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(Config.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         potholeApi = retrofit.create(PotholeApi.class);
@@ -796,6 +1163,8 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
         if (accelerometer != null) {
             sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         }
+
+        fetchPotholesFromApi();
     }
 
     @Override
