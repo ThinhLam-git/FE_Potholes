@@ -6,6 +6,7 @@ public class PotholeStatistics {
     private int reportedPotholes;
     private int inProgressPotholes;
     private double totalKilometers;
+    private int[] potholesLast7Days; // Updated to an array for the last 7 days
 
     public int getTotalPotholes() {
         return totalPotholes;
@@ -45,5 +46,13 @@ public class PotholeStatistics {
 
     public void setTotalKilometers(double totalKilometers) {
         this.totalKilometers = totalKilometers;
+    }
+
+    public int[] getPotholesLast7Days() {
+        return potholesLast7Days;
+    }
+
+    public void setPotholesLast7Days(int[] potholesLast7Days) {
+        this.potholesLast7Days = potholesLast7Days;
     }
 }

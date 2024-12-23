@@ -58,4 +58,7 @@ dependencies {
     implementation ("com.squareup.okhttp3:logging-interceptor:4.9.0")
     implementation ("com.graphhopper:graphhopper-core:6.0")
     implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
+    implementation ("com.airbnb.android:lottie:5.2.0")
+    implementation("com.google.maps.android:android-maps-utils:2.2.5")
+
 }

@@ -49,9 +49,10 @@ public class DashboardFragment extends Fragment {
             @Override
             public void onResponse(@NonNull Call<PotholeStatistics> call, @NonNull Response<PotholeStatistics> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    textPH.setText(String.valueOf(response.body().getTotalPotholes()));
-                    textKM.setText(String.valueOf(response.body().getTotalKilometers()));
-                    updateBarChart(response.body());
+                    PotholeStatistics stats = response.body();
+                    textPH.setText(String.valueOf(stats.getTotalPotholes()));
+                    textKM.setText(String.valueOf(stats.getTotalKilometers()));
+                    updateBarChart(stats);
                 } else {
                     textPH.setText("Failed to fetch data");
                     textKM.setText("Failed to fetch data");
@@ -73,8 +74,7 @@ public class DashboardFragment extends Fragment {
 
     private void updateBarChart(PotholeStatistics statistics) {
         ArrayList<BarEntry> barEntries = new ArrayList<>();
-        // Assuming you have a method to get potholes detected in the last 7 days
-        int[] potholesLast7Days = getPotholesLast7Days(statistics);
+        int[] potholesLast7Days = statistics.getPotholesLast7Days();
         for (int i = 0; i < potholesLast7Days.length; i++) {
             barEntries.add(new BarEntry(i + 1, potholesLast7Days[i]));
         }
@@ -87,10 +87,5 @@ public class DashboardFragment extends Fragment {
         BarData barData = new BarData(barDataSet);
         barChart.setData(barData);
         barChart.invalidate();
-    }
-
-    private int[] getPotholesLast7Days(PotholeStatistics statistics) {
-        // Mock data for the last 7 days
-        return new int[]{5, 10, 15, 20, 25, 30, 35};
     }
 }
