@@ -335,6 +335,7 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
                             "reported"
                     );
                     showReportPotholeDialog(currentLoc, data);
+                    mapView.invalidate();
                 }
             });
         }
@@ -367,6 +368,8 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
                     Marker marker = new Marker(mapView);
                     marker.setPosition(selectedLocation);
                     marker.setTitle(name);
+                    Drawable icon = getResources().getDrawable(R.drawable.ic_red_location);
+                    marker.setIcon(icon);
                     mapView.getOverlays().add(marker);
 
                     marker.setOnMarkerClickListener((marker1, mapview1) -> {
@@ -376,6 +379,7 @@ public class HomeFragment extends Fragment implements SensorEventListener, MapEv
                     });
 
                     showNavigationOption(selectedLocation);
+
                 }
                 @Override
                 public void onError(String message) {
